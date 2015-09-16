@@ -7,7 +7,8 @@ for things like pagination and searching.
 However, `DS.hasMany` cannot be queried in the same way. This means pagination and searching are not
 supported with has-many relationships.
 
-This addon provides a way to query has-many relationships. Currently only `DS.RESTAdapter` is supported.
+This addon provides a way to query has-many relationships. Currently the `DS.RESTAdapter` and the
+`DS.JSONAPIAdapter` are supported.
 
 ## Installation
 
@@ -15,7 +16,7 @@ This addon provides a way to query has-many relationships. Currently only `DS.RE
 
 ## Usage
 
-Add the `RESTAdapterMixin` to your `DS.RESTAdapter` extension:
+Add the `RESTAdapterMixin` to your `DS.RESTAdapter` (or `DS.JSONAPIAdapter`) extension:
 
 ```javascript
 import HasManyQuery from 'ember-data-has-many-query';
