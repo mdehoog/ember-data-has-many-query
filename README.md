@@ -1,25 +1,62 @@
-# Ember-data-has-many-query
+# ember-data-has-many-query
 
-This README outlines the details of collaborating on this Ember addon.
+[Ember Data](https://github.com/emberjs/data)'s `DS.Store` supports querying top-level records using the
+[`query`](http://emberjs.com/api/data/classes/DS.Store.html#method_query) function. This provides support
+for things like pagination and searching.
+
+However, `DS.hasMany` cannot be queried in the same way. This means things like pagination and searching
+are not supported with has-many relationships.
+
+This addon provides a way to query has-many relationships. Currently only `DS.RESTAdapter` is supported.
 
 ## Installation
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+`npm install --save-dev mdehoog/ember-data-has-many-query`
 
-## Running
+## Usage
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+Add the `RESTAdapterMixin` to your `DS.RESTAdapter` extension:
 
-## Running Tests
+```javascript
+import HasManyQuery from 'ember-data-has-many-query';
 
-* `ember test`
-* `ember test --server`
+export default DS.RESTAdapter.extend(DataAdapterMixin, HasManyQuery.RESTAdapterMixin, {
+});
+```
 
-## Building
+Add the `ModelMixin` to any `DS.Model` extensions:
 
-* `ember build`
+```javascript
+import HasManyQuery from 'ember-data-has-many-query';
 
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+export default DS.Model.extend(HasManyQuery.ModelMixin, {
+});
+```
+
+Models with the mixin now support has-many queries:
+
+```javascript
+post.query('comments', { page: 1 });
+```
+
+## Sticky `belongs-to`
+
+Each has-many query calls `reload` on the relationship's `DS.ManyArray`. This means that all previously
+queried records are cleared from the array. If you are caching the records from each query separately
+(for example, in a separate array for an infinite scroll implementation), the inverse `belongs-to`
+relationship is also cleared on those cached records.
+
+If you want to keep the associated belongs-to record after a new query, you can define the belongs-to
+attribute using `belongsToSticky`:
+
+```javascript
+import HasManyQuery from 'ember-data-has-many-query';
+
+export default DS.Model.extend(HasManyQuery.ModelMixin, {
+  post: HasManyQuery.belongsToSticky('post'),
+});
+```
+
+This is a (pretty terrible) hack that caches the belongs-to record in a separate property, and when the
+record is cleared by another query call, any property `get`s will return the cached version instead. If
+anyone has ideas for better implementations, please let me know!
