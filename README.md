@@ -20,7 +20,7 @@ Add the `RESTAdapterMixin` to your `DS.RESTAdapter` extension:
 ```javascript
 import HasManyQuery from 'ember-data-has-many-query';
 
-export default DS.RESTAdapter.extend(DataAdapterMixin, HasManyQuery.RESTAdapterMixin, {
+export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
 });
 ```
 
