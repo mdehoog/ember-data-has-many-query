@@ -4,8 +4,8 @@
 [`query`](http://emberjs.com/api/data/classes/DS.Store.html#method_query) function. This provides support
 for things like pagination and searching.
 
-However, `DS.hasMany` cannot be queried in the same way. This means things like pagination and searching
-are not supported with has-many relationships.
+However, `DS.hasMany` cannot be queried in the same way. This means pagination and searching are not
+supported with has-many relationships.
 
 This addon provides a way to query has-many relationships. Currently only `DS.RESTAdapter` is supported.
 
