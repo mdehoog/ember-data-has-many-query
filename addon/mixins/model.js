@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import DS from 'ember-data';
 import { queryParamPropertyName, stickyPropertyName } from '../property-names';
 import { recordHasId } from '../belongs-to-sticky';
 

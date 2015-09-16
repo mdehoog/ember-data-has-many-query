@@ -29,7 +29,7 @@ var belongsToSticky = function () {
       }
       return this.get(stickyPropertyName(key)) || value;
     },
-    set: function (key, value) {
+    set: function (key) {
       this.set(stickyPropertyName(key), undefined);
       return computed._setter.call(this, ...arguments);
     }
