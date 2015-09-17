@@ -13,7 +13,7 @@ This addon provides a way to query has-many relationships. Currently the `DS.RES
 
 ## Installation
 
-`npm install --save-dev mdehoog/ember-data-has-many-query`
+`ember install ember-data-has-many-query`
 
 ## Usage
 
