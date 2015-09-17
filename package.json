@@ -18,7 +18,7 @@
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Michael de Hoog",
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.0.2",
@@ -40,7 +40,7 @@
     "ember-try": "0.0.6"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon", "ember", "ember-data", "has-many-query", "pagination"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.0.0"
