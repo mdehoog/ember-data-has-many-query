@@ -12,29 +12,30 @@ export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
   },
 
   //mock ajax calls for testing
-  ajax: function(url, type, options) {
+  ajax: function(url) {
     var self = this;
+    var i;
     console.log('AJAX request to: ' + url);
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new Ember.RSVP.Promise(function(resolve) {
       var response = {};
       var match;
       if (match = url.match(/^\/api\/posts$/)) {
         response.posts = [];
-        for (var i = 0; i < 5; i++) {
+        for (i = 0; i < 5; i++) {
           response.posts.push(self.generatePost(i));
         }
       } else if (match = url.match(/^\/api\/posts\/(\d+)$/)) {
         var id = match[1];
         response.post = self.generatePost(id);
       } else if (match = url.match(/^\/api\/posts\/(\d+)\/comments\?page=(\d+)$/)) {
-        var postId = match[1];
+        //var postId = match[1];
         var commentsPage = match[2];
         response.comments = [];
-        for (var i = 0; i < 5; i++) {
+        for (i = 0; i < 5; i++) {
           response.comments.push(self.generateComment(i + (commentsPage - 1) * 5));
         }
       }
-      Ember.run(null, resolve, response);
+      resolve(response);
     });
   },
   generatePost: function(id) {
@@ -50,6 +51,6 @@ export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
     return {
       id: id,
       text: 'Comment ' + id
-    }
+    };
   }
 });
