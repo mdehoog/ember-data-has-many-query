@@ -1,5 +1,5 @@
 # ember-data-has-many-query
-[![Build Status](https://travis-ci.org/mdehoog/ember-data-has-many-query.svg?branch=master)](https://travis-ci.org/mdehoog/ember-data-has-many-query)
+[![Build Status](https://travis-ci.org/mdehoog/ember-data-has-many-query.svg?branch=master)](https://travis-ci.org/mdehoog/ember-data-has-many-query) [![Ember Observer Score](http://emberobserver.com/badges/ember-data-has-many-query.svg)](http://emberobserver.com/addons/ember-data-has-many-query)
 
 [Ember Data](https://github.com/emberjs/data)'s `DS.Store` supports querying top-level records using the
 [`query`](http://emberjs.com/api/data/classes/DS.Store.html#method_query) function. This provides support
