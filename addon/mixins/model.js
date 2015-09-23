@@ -53,7 +53,7 @@ export default Ember.Mixin.create({
     var value = this.get(key);
     if (recordHasId(value)) {
       var meta = this.constructor.metaForProperty(key);
-      if (meta.notNull) {
+      if (meta.sticky) {
         this.set(stickyPropertyName(key), value);
       }
     }

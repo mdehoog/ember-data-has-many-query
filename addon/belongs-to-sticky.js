@@ -20,7 +20,7 @@ var recordHasId = function (record) {
 var belongsToSticky = function () {
   var computed = DS.belongsTo(...arguments);
   var meta = computed.meta();
-  meta.notNull = true;
+  meta.sticky = true;
   return Ember.computed({
     get: function (key) {
       var value = computed._getter.call(this, ...arguments);
