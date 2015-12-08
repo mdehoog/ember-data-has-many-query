@@ -13,12 +13,23 @@ export default Ember.Mixin.create({
 
     //append query params to hasMany URL
     var queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
+    debugger;
     if (!Ember.isEmpty(queryParams)) {
       var queryParamStrings = [];
       Object.keys(queryParams).forEach(function (key) {
         var value = queryParams[key];
         if (!Ember.isEmpty(value)) {
-          queryParamStrings.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+          if(typeof(value)==="object"){
+            Object.keys(value).forEach(function (subKey) {
+              var subValue = value[subKey];
+              if (!Ember.isEmpty(subValue)) {
+                queryParamStrings.push(`${encodeURIComponent(key)}[${encodeURIComponent(subKey)}]=${encodeURIComponent(subValue)}`);
+              }
+            });
+          }
+          else{
+            queryParamStrings.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+          }
         }
       });
       if (queryParamStrings.length) {
