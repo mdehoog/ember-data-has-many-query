@@ -22,7 +22,7 @@ export default Ember.Mixin.create({
             Object.keys(value).forEach(function (subKey) {
               var subValue = value[subKey];
               if (!Ember.isEmpty(subValue)) {
-                queryParamStrings.push(`${encodeURIComponent(key)}[${encodeURIComponent(subKey)}]=${encodeURIComponent(subValue)}`);
+                queryParamStrings.push(`${encodeURIComponent(key)}%5B${encodeURIComponent(subKey)}%5D=${encodeURIComponent(subValue)}`);
               }
             });
           }
