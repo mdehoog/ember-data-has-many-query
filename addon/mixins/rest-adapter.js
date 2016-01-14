@@ -18,15 +18,14 @@ export default Ember.Mixin.create({
       Object.keys(queryParams).forEach(function (key) {
         var value = queryParams[key];
         if (!Ember.isEmpty(value)) {
-          if(typeof(value)==="object"){
+          if (typeof(value) === "object") {
             Object.keys(value).forEach(function (subKey) {
               var subValue = value[subKey];
               if (!Ember.isEmpty(subValue)) {
                 queryParamStrings.push(`${encodeURIComponent(key)}%5B${encodeURIComponent(subKey)}%5D=${encodeURIComponent(subValue)}`);
               }
             });
-          }
-          else{
+          } else {
             queryParamStrings.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
           }
         }
