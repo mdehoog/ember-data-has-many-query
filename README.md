@@ -43,7 +43,7 @@ post.query('comments', { page: 1 });
 
 ## Sticky `belongs-to`
 
-Each has-many query calls `reload` on the relationship's `DS.ManyArray`. This means that all previously
+Ember Data 2.3.x and below: each has-many query calls `reload` on the relationship's `DS.ManyArray`. This means that all previously
 queried records are cleared from the array. If you are caching the records from each query separately
 (for example, in a separate array for an infinite scroll implementation), the inverse `belongs-to`
 relationship is also cleared on those cached records.
