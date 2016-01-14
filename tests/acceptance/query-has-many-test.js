@@ -61,33 +61,6 @@ test('Querying has-many relationship generates correct URL parameters', function
   });
 });
 
-test('Querying has-many relationship multiple times clears belongs-to association', function(assert) {
-  env.adapter.findRecord = function() {
-    return Ember.RSVP.resolve({ post: { id: 5, links: { comments: "/posts/5/comments" } } });
-  };
-
-  env.adapter.ajax = function(url) {
-    var page = url.match(/^.*(\d+)$/)[1];
-    return Ember.RSVP.resolve({ comments: [{id: page * 2}, {id: page * 2 + 1}] });
-  };
-
-  Ember.run(function() {
-    env.store.findRecord('post', 5).then(async(function(post) {
-      return post.query('comments', {page: 1}).then(async(function(comments1) {
-        var comments1Copy = comments1.slice(0);
-        return post.query('comments', {page: 2}).then(async(function(comments2) {
-          comments1Copy.forEach(function(comment) {
-            assert.notEqual(comment.get('post.id'), 5, 'belongs-to association disconnected after multiple has-many queries');
-          });
-          comments2.forEach(function(comment) {
-            assert.equal(comment.get('post.id'), 5, 'belongs-to association correct');
-          });
-        }));
-      }));
-    }));
-  });
-});
-
 test('Querying has-many relationship multiple times doesn\'t clear belongs-to-sticky association', function(assert) {
   Comment.reopen({
     post: HasManyQuery.belongsToSticky('post', { async: true })
