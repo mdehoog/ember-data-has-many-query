@@ -42,8 +42,9 @@ test('Querying has-many relationship generates correct URL parameters', function
     return Ember.RSVP.resolve({ post: { id: 5, links: { comments: "/posts/5/comments" } } });
   };
 
-  env.adapter.ajax = function(url) {
-    assert.equal(url, requiredUrl, 'URL used to query has-many relationship is correct');
+  env.adapter.ajax = function(url, method, options) {
+    var queryString = Ember.$.param(options.data);
+    assert.equal(url + '?' + queryString, requiredUrl, 'URL used to query has-many relationship is correct');
     ajaxCalledCount++;
     return Ember.RSVP.resolve({ comments: [] });
   };
@@ -70,8 +71,9 @@ test('Querying has-many relationship multiple times doesn\'t clear belongs-to-st
     return Ember.RSVP.resolve({ post: { id: 5, links: { comments: "/posts/5/comments" } } });
   };
 
-  env.adapter.ajax = function(url) {
-    var page = url.match(/^.*(\d+)$/)[1];
+  env.adapter.ajax = function(url, method, options) {
+    var queryString = Ember.$.param(options.data);
+    var page = queryString.match(/^.*(\d+)$/)[1];
     return Ember.RSVP.resolve({ comments: [{id: page * 2}, {id: page * 2 + 1}] });
   };
 
