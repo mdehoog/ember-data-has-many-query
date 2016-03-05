@@ -35,13 +35,22 @@ export default Ember.Mixin.create({
         //use the function's return value as the query param value, using the record as 'this'
         addQueryParam(key, value.apply(snapshot.record));
       } else if (typeof value === 'object') {
-        //recurse, adding subkeys in square brackets
-        Object.keys(value).forEach(function (subKey) {
-          var subValue = value[subKey];
-          if (!Ember.isEmpty(subValue)) {
-            addQueryParam(key + '[' + subKey + ']', subValue);
-          }
-        });
+        // if value is an array send data as ...?params[]=1&params[]=2...
+        if (Ember.isArray(value)) {
+          value.forEach(function (subValue) {
+            if (!Ember.isEmpty(subValue)) {
+              addQueryParam(key + '[]', subValue);
+            }
+          });
+        } else {
+          //recurse, adding subkeys in square brackets
+          Object.keys(value).forEach(function (subKey) {
+            var subValue = value[subKey];
+            if (!Ember.isEmpty(subValue)) {
+              addQueryParam(key + '[' + subKey + ']', subValue);
+            }
+          });
+        }
       } else {
         //add the encoded query parameter key=value
         queryParamStrings.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
