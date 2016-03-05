@@ -5,10 +5,10 @@
 [`query`](http://emberjs.com/api/data/classes/DS.Store.html#method_query) function. This provides support
 for things like pagination and searching.
 
-However, `DS.hasMany` cannot be queried in the same way. This means pagination and searching are not
-supported with has-many relationships.
+However, `DS.hasMany` and `DS.belongsTo` cannot be queried in the same way. This means pagination and searching are not
+supported with has-many/belongs-to relationships.
 
-This addon provides a way to query has-many relationships. Currently the `DS.RESTAdapter` and the
+This addon provides a way to query has-many and belongs-to relationships. Currently the `DS.RESTAdapter` and the
 `DS.JSONAPIAdapter` are supported.
 
 ## Installation
@@ -35,7 +35,7 @@ export default DS.Model.extend(HasManyQuery.ModelMixin, {
 });
 ```
 
-Models with the mixin now support has-many queries:
+Models with the mixin now support has-many/belongs-to queries:
 
 ```javascript
 post.query('comments', { page: 1 });
