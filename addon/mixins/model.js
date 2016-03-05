@@ -30,11 +30,25 @@ export default Ember.Mixin.create({
     var _queryParamPropertyName = queryParamPropertyName(propertyName);
     this.set(_queryParamPropertyName, params);
 
-    //retrieve the hasMany relationship
+    //find out what kind of relationship this is
+    var relationshipsByName = this.get('constructor.relationshipsByName');
+    var relationship = relationshipsByName && relationshipsByName.get(propertyName);
+    var isBelongsTo = relationship && relationship.kind === 'belongsTo';
+    var isHasMany = relationship && relationship.kind === 'hasMany';
+
+    //setting the linkPromise in the internal belongsTo relationship forces the belongsTo record to reload
+    if (isBelongsTo) {
+      var internalRelationship = this._internalModel._relationships.get(propertyName);
+      internalRelationship.linkPromise = null;
+      //also notify a property change, to clear the record from the computed property cache
+      this.notifyPropertyChange(propertyName);
+    }
+
+    //retrieve the relationship
     var value = this.get(propertyName);
 
-    //if the hasMany content is already loaded, we must reload it
-    if (value.get('content').get('isLoaded')) {
+    //if the hasMany relationship content is already loaded, we must reload it
+    if (isHasMany && value.get('content.isLoaded')) {
       value = value.reload();
     }
 
