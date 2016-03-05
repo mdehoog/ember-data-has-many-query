@@ -10,73 +10,47 @@ export default Ember.Mixin.create({
     var type = snapshot.modelName;
 
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findHasMany'));
-    url = this.urlQuerySuffix(snapshot, url, relationship);
+    var query = this.buildRelationshipQuery(snapshot, relationship);
 
-    return this.ajax(url, 'GET');
+    return this.ajax(url, 'GET', {data: query});
   },
   findBelongsTo: function (store, snapshot, url, relationship) {
     var id = snapshot.id;
     var type = snapshot.modelName;
 
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findBelongsTo'));
-    url = this.urlQuerySuffix(snapshot, url, relationship);
+    var query = this.buildRelationshipQuery(snapshot, relationship);
 
-    return this.ajax(url, 'GET');
+    return this.ajax(url, 'GET', {data: query});
   },
-  urlQuerySuffix: function (snapshot, url, relationship) {
-    var queryParamStrings = [];
-
-    //function that adds a key=value query param to the array
-    var addQueryParam = function (key, value) {
-      if (Ember.isEmpty(value)) {
-        return;
-      }
-      if (typeof value === 'function') {
-        //use the function's return value as the query param value, using the record as 'this'
-        addQueryParam(key, value.apply(snapshot.record));
-      } else if (typeof value === 'object') {
-        // if value is an array send data as ...?params[]=1&params[]=2...
-        if (Ember.isArray(value)) {
-          value.forEach(function (subValue) {
-            if (!Ember.isEmpty(subValue)) {
-              addQueryParam(key + '[]', subValue);
-            }
-          });
-        } else {
-          //recurse, adding subkeys in square brackets
-          Object.keys(value).forEach(function (subKey) {
-            var subValue = value[subKey];
-            if (!Ember.isEmpty(subValue)) {
-              addQueryParam(key + '[' + subKey + ']', subValue);
-            }
-          });
+  buildRelationshipQuery: function (snapshot, relationship) {
+    var evaluateFunctions = function (object) {
+      Object.keys(object).forEach(function (key) {
+        var value = object[key];
+        if (typeof value === 'function') {
+          object[key] = value.apply(snapshot.record);
+        } else if (typeof value === 'object') {
+          evaluateFunctions(value);
         }
-      } else {
-        //add the encoded query parameter key=value
-        queryParamStrings.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-      }
+      });
     };
+
+    var data = {};
 
     //add query parameters from the model mixin's query function
     var queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
     if (!Ember.isEmpty(queryParams)) {
-      Object.keys(queryParams).forEach(function (key) {
-        addQueryParam(key, queryParams[key]);
-      });
+      data = jQuery.extend(true, data, queryParams);
     }
 
     //add query parameters defined in the model itself by the 'parameters' option
     var relationshipParams = relationship.options.parameters;
     if (!Ember.isEmpty(relationshipParams)) {
-      Object.keys(relationshipParams).forEach(function (key) {
-        addQueryParam(key, relationshipParams[key]);
-      });
+      data = jQuery.extend(true, data, relationshipParams);
     }
 
-    //append the query parameters to the url
-    if (queryParamStrings.length) {
-      url += (url.indexOf('?') < 0 ? '?' : '&') + queryParamStrings.join('&');
-    }
-    return url;
+    //replace any functions in the data with their return value
+    evaluateFunctions(data);
+    return data;
   }
 });
