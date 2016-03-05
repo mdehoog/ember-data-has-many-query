@@ -7,7 +7,7 @@ import { recordHasId } from '../belongs-to-sticky';
  */
 export default Ember.Mixin.create({
   /**
-   * Query a HasMany relationship link.
+   * Query a HasMany/BelongsTo relationship link.
    *
    * If you do something like this:
    * ```javascript
@@ -19,9 +19,9 @@ export default Ember.Mixin.create({
    * Started GET "/api/v1/post/1/comments?page=1"
    * ```
    *
-   * @param {String} propertyName HasMany property name
+   * @param {String} propertyName Relationship property name
    * @param {Object} params Query parameters
-   * @returns {DS.PromiseManyArray}
+   * @returns {DS.PromiseManyArray} for HasMany, {Ember.RSVP.Promise} for BelongsTo
    */
   query: function (propertyName, params) {
     var self = this;
