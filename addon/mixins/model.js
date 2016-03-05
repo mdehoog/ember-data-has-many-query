@@ -30,6 +30,22 @@ export default Ember.Mixin.create({
     var _queryParamPropertyName = queryParamPropertyName(propertyName);
     this.set(_queryParamPropertyName, params);
 
+    //get the relationship value, reloading if necessary
+    var value = this.reloadRelationship(propertyName);
+
+    //return the promise, resetting the query params property to undefined
+    return value.finally(function () {
+      self.set(_queryParamPropertyName, undefined);
+    });
+  },
+
+  /**
+   * Get the relationship property for the given property name, reloading the async relationship if necessary.
+   *
+   * @param propertyName Relationship property name
+   * @returns {DS.PromiseManyArray} for HasMany, {Ember.RSVP.Promise} for BelongsTo
+   */
+  reloadRelationship: function (propertyName) {
     //find out what kind of relationship this is
     var relationshipsByName = this.get('constructor.relationshipsByName');
     var relationship = relationshipsByName && relationshipsByName.get(propertyName);
@@ -52,10 +68,7 @@ export default Ember.Mixin.create({
       value = value.reload();
     }
 
-    //return the promise, resetting the query params property to undefined
-    return value.finally(function () {
-      self.set(_queryParamPropertyName, undefined);
-    });
+    return value;
   },
 
   notifyBelongsToChanged: function (key) {
