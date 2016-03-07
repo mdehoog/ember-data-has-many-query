@@ -27,6 +27,9 @@ export default Ember.Mixin.create({
     var evaluateFunctions = function (object) {
       Object.keys(object).forEach(function (key) {
         var value = object[key];
+        if (!value) {
+          return;
+        }
         if (typeof value === 'function') {
           object[key] = value.apply(snapshot.record);
         } else if (typeof value === 'object') {
