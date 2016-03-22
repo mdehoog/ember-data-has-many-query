@@ -65,7 +65,9 @@ export default Ember.Mixin.create({
 
     //if the hasMany relationship content is already loaded, we must reload it
     if (isHasMany && value.get('content.isLoaded')) {
-      value = value.reload();
+      value = value.then(function (loaded) {
+        return loaded.reload();
+      });
     }
 
     return value;
