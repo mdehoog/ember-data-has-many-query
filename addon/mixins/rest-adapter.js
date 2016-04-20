@@ -25,17 +25,28 @@ export default Ember.Mixin.create({
   },
   buildRelationshipQuery: function (snapshot, relationship) {
     var evaluateFunctions = function (object) {
-      Object.keys(object).forEach(function (key) {
-        var value = object[key];
-        if (!value) {
-          return;
-        }
-        if (typeof value === 'function') {
-          object[key] = value.apply(snapshot.record);
-        } else if (typeof value === 'object') {
-          evaluateFunctions(value);
-        }
-      });
+      if (Ember.isArray(object)) {
+        object.forEach(function (element) {
+          if (typeof element === 'object') {
+            evaluateFunctions(element);
+          }
+        });
+      } else {
+        Object.keys(object).forEach(function (key) {
+          if (!object.hasOwnProperty(key)) {
+            return;
+          }
+          var value = object[key];
+          if (!value) {
+            return;
+          }
+          if (typeof value === 'function') {
+            object[key] = value.apply(snapshot.record);
+          } else if (typeof value === 'object') {
+            evaluateFunctions(value);
+          }
+        });
+      }
     };
 
     var data = {};
