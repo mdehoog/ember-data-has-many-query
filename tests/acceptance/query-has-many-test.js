@@ -49,6 +49,7 @@ test('Querying has-many relationship generates correct URL parameters', function
     return Ember.RSVP.resolve({ comments: [] });
   };
 
+  stop();
   Ember.run(function() {
     env.store.findRecord('post', 5).then(async(function(post) {
       requiredUrl = '/posts/5/comments?page=1';
@@ -58,6 +59,7 @@ test('Querying has-many relationship generates correct URL parameters', function
       }));
     })).then(function() {
       assert.equal(ajaxCalledCount, 2, 'Adapter ajax function was called to query has-many relationship');
+      start();
     });
   });
 });
