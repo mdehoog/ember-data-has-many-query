@@ -1,5 +1,27 @@
 import Ember from 'ember';
-import { queryParamPropertyName } from '../property-names';
+import {queryParamPropertyName, ajaxOptionsPropertyName} from '../property-names';
+
+var evaluateFunctions = function (object, record) {
+  if (Ember.isArray(object)) {
+    object.forEach(function (element) {
+      if (typeof element === 'object') {
+        evaluateFunctions(element, record);
+      }
+    });
+  } else {
+    Object.keys(object).forEach(function (key) {
+      if (!object.hasOwnProperty(key)) {
+        return;
+      }
+      var value = object[key];
+      if (typeof value === 'function') {
+        object[key] = value.apply(record);
+      } else if (typeof value === 'object') {
+        evaluateFunctions(value, record);
+      }
+    });
+  }
+};
 
 /**
  * Mixin for DS.RESTAdapter.
@@ -12,7 +34,9 @@ export default Ember.Mixin.create({
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findHasMany'));
     var query = this.buildRelationshipQuery(snapshot, relationship);
 
-    return this.ajax(url, 'GET', {data: query});
+    var options = {data: query};
+    snapshot.record.set(ajaxOptionsPropertyName(relationship.key), options);
+    return this.ajax(url, 'GET', options);
   },
   findBelongsTo: function (store, snapshot, url, relationship) {
     var id = snapshot.id;
@@ -21,34 +45,11 @@ export default Ember.Mixin.create({
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findBelongsTo'));
     var query = this.buildRelationshipQuery(snapshot, relationship);
 
-    return this.ajax(url, 'GET', {data: query});
+    var options = {data: query};
+    snapshot.record.set(ajaxOptionsPropertyName(relationship.key), options);
+    return this.ajax(url, 'GET', options);
   },
   buildRelationshipQuery: function (snapshot, relationship) {
-    var evaluateFunctions = function (object) {
-      if (Ember.isArray(object)) {
-        object.forEach(function (element) {
-          if (typeof element === 'object') {
-            evaluateFunctions(element);
-          }
-        });
-      } else {
-        Object.keys(object).forEach(function (key) {
-          if (!object.hasOwnProperty(key)) {
-            return;
-          }
-          var value = object[key];
-          if (!value) {
-            return;
-          }
-          if (typeof value === 'function') {
-            object[key] = value.apply(snapshot.record);
-          } else if (typeof value === 'object') {
-            evaluateFunctions(value);
-          }
-        });
-      }
-    };
-
     var data = {};
 
     //add query parameters from the model mixin's query function
@@ -64,7 +65,18 @@ export default Ember.Mixin.create({
     }
 
     //replace any functions in the data with their return value
-    evaluateFunctions(data);
+    evaluateFunctions(data, snapshot.record);
     return data;
+  },
+  ajaxOptions(url, type, options) {
+    var ajaxOptions = this._super(...arguments);
+    var defaultBeforeSend = ajaxOptions.beforeSend || function () {
+      };
+    ajaxOptions.beforeSend = function (jqXHR) {
+      defaultBeforeSend(...arguments);
+      //store the jqXHR in the options object, which in turn is stored in the model itself, so the model mixin can abort it
+      options.jqXHR = jqXHR;
+    };
+    return ajaxOptions;
   }
 });

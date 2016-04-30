@@ -2,8 +2,12 @@ var queryParamPropertyName = function (key) {
   return '_' + key + 'QueryParams';
 };
 
-var stickyPropertyName = function (key) {
-  return '_' + key + 'Sticky';
+var ajaxOptionsPropertyName = function (key) {
+  return '_' + key + 'AjaxOptions';
 };
 
-export { queryParamPropertyName, stickyPropertyName };
+var stickyPropertyName = function (key) {
+  return '_' + key + 'BelongsToSticky';
+};
+
+export {queryParamPropertyName, ajaxOptionsPropertyName, stickyPropertyName};
