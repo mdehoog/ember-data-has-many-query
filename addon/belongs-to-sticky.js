@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import { stickyPropertyName } from './property-names';
+import {stickyPropertyName} from './property-names';
 
 var recordHasId = function (record) {
   return record && record.get('id');
@@ -36,5 +36,5 @@ var belongsToSticky = function () {
   }).meta(meta);
 };
 
-export { recordHasId };
+export {recordHasId};
 export default belongsToSticky;

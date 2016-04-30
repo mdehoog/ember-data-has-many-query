@@ -10,5 +10,5 @@ var RelationshipQuery = function () {
 
 var relationshipQuery = new RelationshipQuery();
 
-export { ModelMixin, RESTAdapterMixin, belongsToSticky };
+export {ModelMixin, RESTAdapterMixin, belongsToSticky};
 export default relationshipQuery;
