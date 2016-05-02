@@ -68,7 +68,7 @@ export default Ember.Mixin.create({
     evaluateFunctions(data, snapshot.record);
     return data;
   },
-  ajaxOptions(url, type, options) {
+  ajaxOptions: function () {
     var ajaxOptions = this._super(...arguments);
     var defaultBeforeSend = ajaxOptions.beforeSend || function () {
       };
