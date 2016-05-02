@@ -75,7 +75,7 @@ export default Ember.Mixin.create({
     ajaxOptions.beforeSend = function (jqXHR) {
       defaultBeforeSend(...arguments);
       //store the jqXHR in the options object, which in turn is stored in the model itself, so the model mixin can abort it
-      options.jqXHR = jqXHR;
+      ajaxOptions.jqXHR = jqXHR;
     };
     return ajaxOptions;
   }
