@@ -73,7 +73,8 @@ export default Ember.Mixin.create({
     return new Ember.RSVP.Promise(function (resolve) {
       //run.next, so that aborted promise gets rejected before starting another
       Ember.run.next(this, function () {
-        resolve(reference.reload());
+        var isLoaded = reference.value() !== null;
+        resolve(isLoaded ? reference.reload() : reference.load());
       });
     });
   },
