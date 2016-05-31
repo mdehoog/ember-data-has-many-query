@@ -8,7 +8,7 @@ var evaluateFunctions = function (object, record) {
         evaluateFunctions(element, record);
       }
     });
-  } else {
+  } else if (!Ember.isNone(object)) {
     Object.keys(object).forEach(function (key) {
       if (!object.hasOwnProperty(key)) {
         return;
