@@ -1,6 +1,11 @@
 import Ember from 'ember';
 import DS from 'ember-data';
-import {queryParamPropertyName, ajaxOptionsPropertyName, stickyPropertyName} from '../property-names';
+import {
+  queryParamPropertyName,
+  lastWasErrorPropertyName,
+  ajaxOptionsPropertyName,
+  stickyPropertyName
+} from '../property-names';
 import {recordHasId} from '../belongs-to-sticky';
 
 /**
@@ -69,12 +74,29 @@ export default Ember.Mixin.create({
     var relationship = relationshipsByName && relationshipsByName.get(propertyName);
     var isHasMany = relationship && relationship.kind === 'hasMany';
 
+    var self = this;
     var reference = isHasMany ? this.hasMany(propertyName) : this.belongsTo(propertyName);
     return new Ember.RSVP.Promise(function (resolve) {
       //run.next, so that aborted promise gets rejected before starting another
       Ember.run.next(this, function () {
         var isLoaded = reference.value() !== null;
-        resolve(isLoaded ? reference.reload() : reference.load());
+        if (isLoaded) {
+          resolve(reference.reload());
+        } else {
+          //isLoaded is false when the last query resulted in an error, so if this load
+          //results in an error again, reload the reference to query the server again
+          var promise = reference.load().catch(function (error) {
+            var _lastWasErrorPropertyName = lastWasErrorPropertyName(propertyName);
+            if (self.get(_lastWasErrorPropertyName)) {
+              //last access to this property resulted in an error, so reload
+              return reference.reload();
+            }
+            //mark this result as an error for next time the property is queried
+            self.set(_lastWasErrorPropertyName, true);
+            throw error;
+          });
+          resolve(promise);
+        }
       });
     });
   },

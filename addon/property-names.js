@@ -1,13 +1,17 @@
 var queryParamPropertyName = function (key) {
-  return '_' + key + 'QueryParams';
+  return '__' + key + 'QueryParams';
+};
+
+var lastWasErrorPropertyName = function (key) {
+  return '__' + key + 'LastWasError';
 };
 
 var ajaxOptionsPropertyName = function (key) {
-  return '_' + key + 'AjaxOptions';
+  return '__' + key + 'AjaxOptions';
 };
 
 var stickyPropertyName = function (key) {
-  return '_' + key + 'BelongsToSticky';
+  return '__' + key + 'BelongsToSticky';
 };
 
-export {queryParamPropertyName, ajaxOptionsPropertyName, stickyPropertyName};
+export {queryParamPropertyName, lastWasErrorPropertyName, ajaxOptionsPropertyName, stickyPropertyName};
