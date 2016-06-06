@@ -47,17 +47,14 @@ export default Ember.Mixin.create({
     var value = this.reloadRelationship(propertyName);
 
     //return the promise, clearing the query params and ajax options properties
-    return value.then(function (response) {
-      self.set(_queryParamPropertyName, undefined);
-      return response;
-    }).catch(function (error) {
+    return value.catch(function (error) {
       if (error instanceof DS.AbortError) {
         //ignore aborted requests
         return;
       }
-      self.set(_queryParamPropertyName, undefined);
       throw error;
     }).finally(function () {
+      self.set(_queryParamPropertyName, undefined);
       self.set(_ajaxOptionsPropertyName, undefined);
     });
   },
