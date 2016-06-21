@@ -2,6 +2,10 @@ var queryParamPropertyName = function (key) {
   return '__' + key + 'QueryParams';
 };
 
+var queryIdPropertyName = function (key) {
+  return '__' + key + 'QueryId';
+};
+
 var lastWasErrorPropertyName = function (key) {
   return '__' + key + 'LastWasError';
 };
@@ -14,4 +18,4 @@ var stickyPropertyName = function (key) {
   return '__' + key + 'BelongsToSticky';
 };
 
-export {queryParamPropertyName, lastWasErrorPropertyName, ajaxOptionsPropertyName, stickyPropertyName};
+export {queryParamPropertyName, queryIdPropertyName, lastWasErrorPropertyName, ajaxOptionsPropertyName, stickyPropertyName};

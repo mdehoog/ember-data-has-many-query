@@ -2,11 +2,14 @@ import Ember from 'ember';
 import DS from 'ember-data';
 import {
   queryParamPropertyName,
+  queryIdPropertyName,
   lastWasErrorPropertyName,
   ajaxOptionsPropertyName,
   stickyPropertyName
 } from '../property-names';
 import {recordHasId} from '../belongs-to-sticky';
+
+var queryId = 0;
 
 /**
  * Mixin for DS.Model extensions.
@@ -32,16 +35,19 @@ export default Ember.Mixin.create({
   query: function (propertyName, params) {
     var self = this;
 
-    //set the query params as a property on this record
-    var _queryParamPropertyName = queryParamPropertyName(propertyName);
-    this.set(_queryParamPropertyName, params);
-
     //abort the last query request for this property
     var _ajaxOptionsPropertyName = ajaxOptionsPropertyName(propertyName);
     var lastAjaxOptions = this.get(_ajaxOptionsPropertyName);
     if (lastAjaxOptions && lastAjaxOptions.jqXHR) {
       lastAjaxOptions.jqXHR.abort();
     }
+
+    //set the query params as a property on this record
+    var _queryParamPropertyName = queryParamPropertyName(propertyName);
+    var _queryIdPropertyName = queryIdPropertyName(propertyName);
+    var currentQueryId = queryId++;
+    this.set(_queryParamPropertyName, params);
+    this.set(_queryIdPropertyName, currentQueryId);
 
     //get the relationship value, reloading if necessary
     var value = this.reloadRelationship(propertyName);
@@ -54,6 +60,10 @@ export default Ember.Mixin.create({
       }
       throw error;
     }).finally(function () {
+      if (self.get(_queryIdPropertyName) !== currentQueryId) {
+        //don't clear parameters if they've been set by another request
+        return;
+      }
       self.set(_queryParamPropertyName, undefined);
       self.set(_ajaxOptionsPropertyName, undefined);
     });
