@@ -112,6 +112,13 @@ export default Ember.Mixin.create({
     //called when a belongsTo property changes
     this._super(...arguments);
 
+    // If a relation is loaded but empty (e.g. linkage data was supplied but unused), then
+    // loading the resource will cause an external request. In this case, do nothing
+    // unless the record has been fully loaded.
+    if (this._internalModel._relationships.get(key).inverseRecord && this._internalModel._relationships.get(key).inverseRecord.isEmpty()) {
+      return;
+    }
+
     //if a belongsTo relationship attribute has changed, and the new record has an id,
     //store the record in a property so that the belongsToSticky can return if it required
     var value = this.get(key);
