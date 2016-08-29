@@ -77,8 +77,7 @@ export default Ember.Mixin.create({
    */
   reloadRelationship: function (propertyName) {
     //find out what kind of relationship this is
-    var relationshipsByName = this.get('constructor.relationshipsByName');
-    var relationship = relationshipsByName && relationshipsByName.get(propertyName);
+    var relationship = this.relationshipFor(propertyName);
     var isHasMany = relationship && relationship.kind === 'hasMany';
 
     var self = this;
@@ -112,14 +111,21 @@ export default Ember.Mixin.create({
     //called when a belongsTo property changes
     this._super(...arguments);
 
+    //check if the belongsTo relationship has been marked as sticky
+    var meta = this.constructor.metaForProperty(key);
+    if (!meta.sticky) {
+      return;
+    }
+
+    //check if the value is loaded
+    var reference = this.belongsTo(key);
+    var value = reference && reference.value();
+    if (!recordHasId(value) || value.get('isEmpty')) {
+      return;
+    }
+
     //if a belongsTo relationship attribute has changed, and the new record has an id,
     //store the record in a property so that the belongsToSticky can return if it required
-    var value = this.get(key);
-    if (recordHasId(value)) {
-      var meta = this.constructor.metaForProperty(key);
-      if (meta.sticky) {
-        this.set(stickyPropertyName(key), value);
-      }
-    }
+    this.set(stickyPropertyName(key), value);
   }
 });
