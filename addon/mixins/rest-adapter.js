@@ -55,13 +55,13 @@ export default Ember.Mixin.create({
     //add query parameters from the model mixin's query function
     var queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
     if (!Ember.isEmpty(queryParams)) {
-      data = jQuery.extend(true, data, queryParams);
+      data = Ember.copy(queryParams, true);
     }
 
     //add query parameters defined in the model itself by the 'parameters' option
     var relationshipParams = relationship.options.parameters;
     if (!Ember.isEmpty(relationshipParams)) {
-      data = jQuery.extend(true, data, relationshipParams);
+      Ember.assign(data, relationshipParams);
     }
 
     //replace any functions in the data with their return value
