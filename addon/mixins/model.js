@@ -15,6 +15,15 @@ var queryId = 0;
  * Mixin for DS.Model extensions.
  */
 export default Ember.Mixin.create({
+  init() {
+    this._super(...arguments);
+
+    // Set sticky properties on init
+    this.eachRelationship((key, reference) => {
+      this._setStickyPropertyForKey(key);
+    });
+  },
+
   /**
    * Query a HasMany/BelongsTo relationship link.
    *
@@ -110,7 +119,10 @@ export default Ember.Mixin.create({
   notifyBelongsToChanged: function (key) {
     //called when a belongsTo property changes
     this._super(...arguments);
+    this._setStickyPropertyForKey(key);
+  },
 
+  _setStickyPropertyForKey(key) {
     //check if the belongsTo relationship has been marked as sticky
     var meta = this.constructor.metaForProperty(key);
     if (!meta.sticky) {
