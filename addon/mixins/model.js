@@ -19,7 +19,7 @@ export default Ember.Mixin.create({
     this._super(...arguments);
 
     // Set sticky properties on init
-    this.eachRelationship((key, reference) => {
+    this.eachRelationship(key => {
       this._setStickyPropertyForKey(key);
     });
   },
