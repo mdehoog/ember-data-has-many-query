@@ -12,10 +12,10 @@ export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
   },
 
   //mock ajax calls for testing
-  ajax: function(url) {
+  ajax: function(url, method, options) {
     var self = this;
     var i;
-    console.log('AJAX request to: ' + url);
+    console.log('AJAX request to: ' + url + ' with options ' + JSON.stringify(options));
     return new Ember.RSVP.Promise(function(resolve) {
       var response = {};
       var match;
@@ -27,9 +27,8 @@ export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
       } else if (match = url.match(/^\/api\/posts\/(\d+)$/)) {
         var id = match[1];
         response.post = self.generatePost(id);
-      } else if (match = url.match(/^\/api\/posts\/(\d+)\/comments\?page=(\d+)$/)) {
-        //var postId = match[1];
-        var commentsPage = match[2];
+      } else if (match = url.match(/^\/api\/posts\/(\d+)\/comments$/)) {
+        var commentsPage = options.data.page;
         response.comments = [];
         for (i = 0; i < 5; i++) {
           response.comments.push(self.generateComment(i + (commentsPage - 1) * 5));

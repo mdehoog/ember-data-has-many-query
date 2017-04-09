@@ -1,13 +1,21 @@
 import Ember from 'ember';
+import DS from 'ember-data';
+import Owner from './owner';
 
-export default function(options) {
-  var container, registry;
-  var env = {};
+export default function setupStore(options) {
+  let container, registry, owner;
+  let env = {};
   options = options || {};
 
   if (Ember.Registry) {
     registry = env.registry = new Ember.Registry();
-    container = env.container = registry.container();
+    owner = Owner.create({
+      __registry__: registry
+    });
+    container = env.container = registry.container({
+      owner: owner
+    });
+    owner.__container__ = container;
   } else {
     container = env.container = new Ember.Container();
     registry = env.registry = container;
@@ -21,7 +29,7 @@ export default function(options) {
     }
   };
 
-  var adapter = env.adapter = (options.adapter || '-default');
+  let adapter = env.adapter = (options.adapter || '-default');
   delete options.adapter;
 
   if (typeof adapter !== 'string') {
@@ -29,7 +37,7 @@ export default function(options) {
     adapter = '-ember-data-test-custom';
   }
 
-  for (var prop in options) {
+  for (let prop in options) {
     registry.register('model:' + Ember.String.dasherize(prop), options[prop]);
   }
 
@@ -55,4 +63,10 @@ export default function(options) {
   env.adapter = env.store.get('defaultAdapter');
 
   return env;
+}
+
+export { setupStore };
+
+export function createStore(options) {
+  return setupStore(options).store;
 }
