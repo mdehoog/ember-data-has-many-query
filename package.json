@@ -1,6 +1,6 @@
 {
   "name": "ember-data-has-many-query",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "Ember data addon for querying async has-many relationships using query parameters",
   "directories": {
     "doc": "doc",
