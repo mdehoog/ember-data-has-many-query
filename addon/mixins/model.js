@@ -55,13 +55,16 @@ export default Ember.Mixin.create({
     var _queryParamPropertyName = queryParamPropertyName(propertyName);
     var _queryIdPropertyName = queryIdPropertyName(propertyName);
     var currentQueryId = queryId++;
+
+    const oldParams = this.get(_queryParamPropertyName, params)
+
     this.set(_queryParamPropertyName, params);
     this.set(_queryIdPropertyName, currentQueryId);
 
     //get the relationship value, reloading if necessary
-    var value = this.reloadRelationship(propertyName);
+    var value = this.reloadRelationship(propertyName, JSON.stringify(params) === JSON.stringify(oldParams));
 
-    //return the promise, clearing the query params and ajax options properties
+    //return the promise, clearing the ajax options property
     return value.catch(function (error) {
       if (error instanceof DS.AbortError) {
         //ignore aborted requests
@@ -73,7 +76,6 @@ export default Ember.Mixin.create({
         //don't clear parameters if they've been set by another request
         return;
       }
-      self.set(_queryParamPropertyName, undefined);
       self.set(_ajaxOptionsPropertyName, undefined);
     });
   },
@@ -84,7 +86,7 @@ export default Ember.Mixin.create({
    * @param propertyName Relationship property name
    * @returns {Ember.RSVP.Promise}
    */
-  reloadRelationship: function (propertyName) {
+  reloadRelationship: function (propertyName, forceReload) {
     //find out what kind of relationship this is
     var relationship = this.relationshipFor(propertyName);
     var isHasMany = relationship && relationship.kind === 'hasMany';
@@ -95,7 +97,7 @@ export default Ember.Mixin.create({
       //run.next, so that aborted promise gets rejected before starting another
       Ember.run.next(this, function () {
         var isLoaded = reference.value() !== null;
-        if (isLoaded) {
+        if (isLoaded || force) {
           resolve(reference.reload());
         } else {
           //isLoaded is false when the last query resulted in an error, so if this load
