@@ -1,10 +1,12 @@
-import Ember from 'ember';
 import DS from 'ember-data';
+import $ from 'jquery';
+import { resolve } from 'rsvp';
+import { run } from '@ember/runloop';
 import {module, test} from 'qunit';
 import {setupStore} from '../helpers/store';
 import HasManyQuery from 'ember-data-has-many-query';
 
-var env, store;
+var env;
 
 var Post = DS.Model.extend(HasManyQuery.ModelMixin, {
   comments: DS.hasMany('comment', {async: true})
@@ -18,7 +20,7 @@ function initializeStore(adapter) {
   env = setupStore({
     adapter: adapter
   });
-  store = env.store;
+
 
   env.registry.register('model:post', Post);
   env.registry.register('model:comment', Comment);
@@ -30,7 +32,7 @@ module("integration/query-has-many", {
     initializeStore(adapter);
   },
   afterEach() {
-    store = null;
+
     env = null;
   }
 });
@@ -40,18 +42,18 @@ test('Querying has-many relationship generates correct URL parameters', function
   var requiredUrl = '';
 
   env.adapter.findRecord = function () {
-    return Ember.RSVP.resolve({post: {id: 5, links: {comments: "/posts/5/comments"}}});
+    return resolve({post: {id: 5, links: {comments: "/posts/5/comments"}}});
   };
 
   env.adapter.ajax = function (url, method, options) {
-    var queryString = Ember.$.param(options.data);
+    var queryString = $.param(options.data);
     assert.equal(url + '?' + queryString, requiredUrl, 'URL used to query has-many relationship is correct');
     ajaxCalledCount++;
-    return Ember.RSVP.resolve({comments: [{id: 1}]});
+    return resolve({comments: [{id: 1}]});
   };
 
   var done = assert.async();
-  Ember.run(function () {
+  run(function () {
     env.store.findRecord('post', 5).then(assert.wait(function (post) {
       requiredUrl = '/posts/5/comments?page=1';
       return post.query('comments', {page: 1}).then(assert.wait(function () {
@@ -71,16 +73,16 @@ test('Querying has-many relationship multiple times doesn\'t clear belongs-to-st
   });
 
   env.adapter.findRecord = function () {
-    return Ember.RSVP.resolve({post: {id: 5, links: {comments: "/posts/5/comments"}}});
+    return resolve({post: {id: 5, links: {comments: "/posts/5/comments"}}});
   };
 
   env.adapter.ajax = function (url, method, options) {
-    var queryString = Ember.$.param(options.data);
+    var queryString = $.param(options.data);
     var page = queryString.match(/^.*(\d+)$/)[1];
-    return Ember.RSVP.resolve({comments: [{id: page * 2}, {id: page * 2 + 1}]});
+    return resolve({comments: [{id: page * 2}, {id: page * 2 + 1}]});
   };
 
-  Ember.run(function () {
+  run(function () {
     env.store.findRecord('post', 5).then(assert.wait(function (post) {
       return post.query('comments', {page: 1}).then(assert.wait(function (comments1) {
         var comments1Copy = comments1.slice(0);

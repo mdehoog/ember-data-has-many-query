@@ -1,5 +1,5 @@
-import Ember from 'ember';
 import DS from 'ember-data';
+import { Promise } from 'rsvp';
 import HasManyQuery from 'ember-data-has-many-query';
 
 export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
@@ -15,19 +15,20 @@ export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
   ajax: function(url, method, options) {
     var self = this;
     var i;
+    // eslint-disable-next-line
     console.log('AJAX request to: ' + url + ' with options ' + JSON.stringify(options));
-    return new Ember.RSVP.Promise(function(resolve) {
+    return new Promise(function(resolve) {
       var response = {};
       var match;
-      if (match = url.match(/^\/api\/posts$/)) {
+      if ((match = url.match(/^\/api\/posts$/))) {
         response.posts = [];
         for (i = 0; i < 5; i++) {
           response.posts.push(self.generatePost(i));
         }
-      } else if (match = url.match(/^\/api\/posts\/(\d+)$/)) {
+      } else if ((match = url.match(/^\/api\/posts\/(\d+)$/))) {
         var id = match[1];
         response.post = self.generatePost(id);
-      } else if (match = url.match(/^\/api\/posts\/(\d+)\/comments$/)) {
+      } else if ((match = url.match(/^\/api\/posts\/(\d+)\/comments$/))) {
         var commentsPage = options.data.page;
         response.comments = [];
         for (i = 0; i < 5; i++) {

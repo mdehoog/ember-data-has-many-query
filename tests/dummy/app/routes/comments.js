@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
   model: function (params) {
     var postPromise = this.store.find('post', params.post_id);
     return postPromise.then(function(post) {
