@@ -2,7 +2,7 @@ import Mixin from '@ember/object/mixin';
 import { isArray } from '@ember/array';
 import { isNone, isEmpty } from '@ember/utils';
 import { assign } from '@ember/polyfills';
-import { copy } from 'ember-copy'
+import { copy } from 'ember-copy';
 import { queryParamPropertyName, ajaxOptionsPropertyName } from '../property-names';
 
 const evaluateFunctions = function (object, record) {
