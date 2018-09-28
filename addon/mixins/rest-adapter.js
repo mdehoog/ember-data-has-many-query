@@ -5,7 +5,7 @@ import { assign } from '@ember/polyfills';
 import { copy } from 'ember-copy'
 import { queryParamPropertyName, ajaxOptionsPropertyName } from '../property-names';
 
-var evaluateFunctions = function (object, record) {
+const evaluateFunctions = function (object, record) {
   if (isArray(object)) {
     object.forEach(function (element) {
       if (typeof element === 'object') {
@@ -17,7 +17,7 @@ var evaluateFunctions = function (object, record) {
       if (!object.hasOwnProperty(key)) {
         return;
       }
-      var value = object[key];
+      const value = object[key];
       if (typeof value === 'function') {
         object[key] = value.apply(record);
       } else if (typeof value === 'object') {
@@ -32,38 +32,38 @@ var evaluateFunctions = function (object, record) {
  */
 export default Mixin.create({
   findHasMany: function (store, snapshot, url, relationship) {
-    var id = snapshot.id;
-    var type = snapshot.modelName;
+    const id = snapshot.id;
+    const type = snapshot.modelName;
 
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findHasMany'));
-    var query = this.buildRelationshipQuery(snapshot, relationship);
+    const query = this.buildRelationshipQuery(snapshot, relationship);
 
-    var options = {data: query};
+    const options = {data: query};
     snapshot.record.set(ajaxOptionsPropertyName(relationship.key), options);
     return this.ajax(url, 'GET', options);
   },
   findBelongsTo: function (store, snapshot, url, relationship) {
-    var id = snapshot.id;
-    var type = snapshot.modelName;
+    const id = snapshot.id;
+    const type = snapshot.modelName;
 
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findBelongsTo'));
-    var query = this.buildRelationshipQuery(snapshot, relationship);
+    const query = this.buildRelationshipQuery(snapshot, relationship);
 
-    var options = {data: query};
+    const options = {data: query};
     snapshot.record.set(ajaxOptionsPropertyName(relationship.key), options);
     return this.ajax(url, 'GET', options);
   },
   buildRelationshipQuery: function (snapshot, relationship) {
-    var data = {};
+    let data = {};
 
     //add query parameters from the model mixin's query function
-    var queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
+    const queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
     if (!isEmpty(queryParams)) {
       data = copy(queryParams, true);
     }
 
     //add query parameters defined in the model itself by the 'parameters' option
-    var relationshipParams = relationship.options.parameters;
+    const relationshipParams = relationship.options.parameters;
     if (!isEmpty(relationshipParams)) {
       assign(data, relationshipParams);
     }
@@ -73,8 +73,8 @@ export default Mixin.create({
     return data;
   },
   ajaxOptions: function () {
-    var ajaxOptions = this._super(...arguments);
-    var defaultBeforeSend = ajaxOptions.beforeSend || function () {
+    let ajaxOptions = this._super(...arguments);
+    const defaultBeforeSend = ajaxOptions.beforeSend || function () {
       };
     ajaxOptions.beforeSend = function (jqXHR) {
       defaultBeforeSend(...arguments);
