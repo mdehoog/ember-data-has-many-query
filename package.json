@@ -21,7 +21,8 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
-    "ember-cli-babel": "^6.16.0"
+    "ember-cli-babel": "^6.16.0",
+    "ember-copy": "^1.0.0"
   },
   "devDependencies": {
     "@ember/jquery": "^0.5.2",
@@ -41,7 +42,6 @@
     "ember-cli-template-lint": "^1.0.0-beta.1",
     "ember-cli-test-loader": "^2.2.0",
     "ember-cli-uglify": "^2.1.0",
-    "ember-copy": "^1.0.0",
     "ember-data": "~3.4.0",
     "ember-disable-prototype-extensions": "^1.1.3",
     "ember-export-application-global": "^2.0.0",
