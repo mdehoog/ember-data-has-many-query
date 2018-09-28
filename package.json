@@ -1,6 +1,6 @@
 {
   "name": "ember-data-has-many-query",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Ember data addon for querying async has-many relationships using query parameters",
   "author": "Michael de Hoog",
   "license": "MIT",
@@ -25,6 +25,7 @@
     "ember-copy": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0-beta.42",
     "@ember/jquery": "^0.5.2",
     "broccoli-asset-rev": "^2.7.0",
     "ember-ajax": "^3.1.0",
