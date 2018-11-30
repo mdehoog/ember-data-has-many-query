@@ -1,14 +1,21 @@
-import Ember from 'ember';
-import {queryParamPropertyName, ajaxOptionsPropertyName} from '../property-names';
+import { assign } from '@ember/polyfills';
+import { copy } from '@ember/object/internals';
+import Mixin from '@ember/object/mixin';
+import { isNone, isEmpty } from '@ember/utils';
+import { isArray } from '@ember/array';
+import {
+  queryParamPropertyName,
+  ajaxOptionsPropertyName
+} from '../property-names';
 
 var evaluateFunctions = function (object, record) {
-  if (Ember.isArray(object)) {
+  if (isArray(object)) {
     object.forEach(function (element) {
       if (typeof element === 'object') {
         evaluateFunctions(element, record);
       }
     });
-  } else if (!Ember.isNone(object)) {
+  } else if (!isNone(object)) {
     Object.keys(object).forEach(function (key) {
       if (!object.hasOwnProperty(key)) {
         return;
@@ -26,7 +33,7 @@ var evaluateFunctions = function (object, record) {
 /**
  * Mixin for DS.RESTAdapter.
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
   findHasMany: function (store, snapshot, url, relationship) {
     var id = snapshot.id;
     var type = snapshot.modelName;
@@ -54,14 +61,14 @@ export default Ember.Mixin.create({
 
     //add query parameters from the model mixin's query function
     var queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
-    if (!Ember.isEmpty(queryParams)) {
-      data = Ember.copy(queryParams, true);
+    if (!isEmpty(queryParams)) {
+      data = copy(queryParams, true);
     }
 
     //add query parameters defined in the model itself by the 'parameters' option
     var relationshipParams = relationship.options.parameters;
-    if (!Ember.isEmpty(relationshipParams)) {
-      Ember.assign(data, relationshipParams);
+    if (!isEmpty(relationshipParams)) {
+      assign(data, relationshipParams);
     }
 
     //replace any functions in the data with their return value

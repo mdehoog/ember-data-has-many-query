@@ -1,0 +1,7 @@
+[2,"_RegistryProxyMixin",5,"tests/helpers/owner.js","let Owner;\n\nif (Ember._RegistryProxyMixin && Ember._ContainerProxyMixin) {\n  Owner = Ember.Object.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin);\n} else {"]
+[2,"_ContainerProxyMixin",5,"tests/helpers/owner.js","let Owner;\n\nif (Ember._RegistryProxyMixin && Ember._ContainerProxyMixin) {\n  Owner = Ember.Object.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin);\n} else {"]
+[2,"_RegistryProxyMixin",6,"tests/helpers/owner.js","\nif (Ember._RegistryProxyMixin && Ember._ContainerProxyMixin) {\n  Owner = Ember.Object.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin);\n} else {\n  Owner = Ember.Object.extend();"]
+[2,"_ContainerProxyMixin",6,"tests/helpers/owner.js","\nif (Ember._RegistryProxyMixin && Ember._ContainerProxyMixin) {\n  Owner = Ember.Object.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin);\n} else {\n  Owner = Ember.Object.extend();"]
+[2,"Registry",10,"tests/helpers/store.js","  options = options || {};\n\n  if (Ember.Registry) {\n    registry = env.registry = new Ember.Registry();\n    owner = Owner.create({"]
+[2,"Registry",11,"tests/helpers/store.js","\n  if (Ember.Registry) {\n    registry = env.registry = new Ember.Registry();\n    owner = Owner.create({\n      __registry__: registry"]
+[2,"Container",20,"tests/helpers/store.js","    owner.__container__ = container;\n  } else {\n    container = env.container = new Ember.Container();\n    registry = env.registry = container;\n  }"]

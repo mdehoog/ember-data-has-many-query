@@ -1,9 +1,8 @@
-import resolver from './helpers/resolver';
-import {setResolver} from 'ember-qunit';
-import {wait} from 'dummy/tests/helpers/async';
-import QUnit from 'qunit';
+import Application from '../app';
+import config from '../config/environment';
+import { setApplication } from '@ember/test-helpers';
+import { start } from 'ember-qunit';
 
-const {assert} = QUnit;
+setApplication(Application.create(config.APP));
 
-setResolver(resolver);
-assert.wait = wait;
+start();

@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
 import DS from 'ember-data';
-import {stickyPropertyName} from './property-names';
+import { stickyPropertyName } from './property-names';
 
 var recordHasId = function (record) {
   return record && record.get('id');
@@ -21,7 +21,7 @@ var belongsToSticky = function () {
   var computed = DS.belongsTo(...arguments);
   var meta = computed.meta();
   meta.sticky = true;
-  return Ember.computed({
+  return computed({
     get: function (key) {
       var value = computed._getter.call(this, ...arguments);
       if (recordHasId(value)) {

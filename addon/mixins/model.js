@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { next } from '@ember/runloop';
+import { Promise } from 'rsvp';
+import Mixin from '@ember/object/mixin';
 import DS from 'ember-data';
 import {
   queryParamPropertyName,
@@ -7,14 +9,14 @@ import {
   ajaxOptionsPropertyName,
   stickyPropertyName
 } from '../property-names';
-import {recordHasId} from '../belongs-to-sticky';
+import { recordHasId } from '../belongs-to-sticky';
 
 var queryId = 0;
 
 /**
  * Mixin for DS.Model extensions.
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
   init() {
     this._super(...arguments);
 
@@ -93,9 +95,9 @@ export default Ember.Mixin.create({
 
     var self = this;
     var reference = isHasMany ? this.hasMany(propertyName) : this.belongsTo(propertyName);
-    return new Ember.RSVP.Promise(function (resolve) {
+    return new Promise(function (resolve) {
       //run.next, so that aborted promise gets rejected before starting another
-      Ember.run.next(this, function () {
+      next(this, function () {
         var isLoaded = reference.value() !== null;
         if (isLoaded || force) {
           resolve(reference.reload());
