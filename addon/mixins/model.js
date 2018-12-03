@@ -56,7 +56,7 @@ export default Ember.Mixin.create({
     var _queryIdPropertyName = queryIdPropertyName(propertyName);
     var currentQueryId = queryId++;
 
-    const oldParams = this.get(_queryParamPropertyName, params)
+    const oldParams = this.get(_queryParamPropertyName, params);
 
     this.set(_queryParamPropertyName, params);
     this.set(_queryIdPropertyName, currentQueryId);
@@ -97,7 +97,7 @@ export default Ember.Mixin.create({
       //run.next, so that aborted promise gets rejected before starting another
       Ember.run.next(this, function () {
         var isLoaded = reference.value() !== null;
-        if (isLoaded || force) {
+        if (isLoaded || forceReload) {
           resolve(reference.reload());
         } else {
           //isLoaded is false when the last query resulted in an error, so if this load
