@@ -88,7 +88,7 @@ export default Mixin.create({
    * @param propertyName Relationship property name
    * @returns {Ember.RSVP.Promise}
    */
-  reloadRelationship: function (propertyName, forceReload) {
+  reloadRelationship: function (propertyName) {
     //find out what kind of relationship this is
     var relationship = this.relationshipFor(propertyName);
     var isHasMany = relationship && relationship.kind === 'hasMany';

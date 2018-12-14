@@ -6,7 +6,7 @@ import { module, test } from 'qunit';
 import { setupStore } from '../helpers/store';
 import HasManyQuery from 'ember-data-has-many-query';
 
-var env, store;
+var env;
 
 var Post = DS.Model.extend(HasManyQuery.ModelMixin, {
   comments: DS.hasMany('comment', {async: true})
@@ -20,7 +20,6 @@ function initializeStore(adapter) {
   env = setupStore({
     adapter: adapter
   });
-  store = env.store;
 
   env.registry.register('model:post', Post);
   env.registry.register('model:comment', Comment);
@@ -33,7 +32,6 @@ module("integration/query-has-many", function(hooks) {
   });
 
   hooks.afterEach(function() {
-    store = null;
     env = null;
   });
 
