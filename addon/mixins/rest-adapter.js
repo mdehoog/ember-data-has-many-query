@@ -57,7 +57,7 @@ export default Mixin.create({
     return this.ajax(url, 'GET', options);
   },
   buildRelationshipQuery: function (snapshot, relationship) {
-    const data = {};
+    let data = {};
 
     //add query parameters from the model mixin's query function
     const queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
