@@ -1,20 +1,29 @@
 import { run } from '@ember/runloop';
-import $ from 'jquery';
 import { resolve } from 'rsvp';
 import DS from 'ember-data';
 import { module, test } from 'qunit';
 import { setupStore } from '../helpers/store';
 import HasManyQuery from 'ember-data-has-many-query';
 
-var env;
+let env;
 
-var Post = DS.Model.extend(HasManyQuery.ModelMixin, {
+let Post = DS.Model.extend(HasManyQuery.ModelMixin, {
   comments: DS.hasMany('comment', {async: true})
 });
 
-var Comment = DS.Model.extend(HasManyQuery.ModelMixin, {
+let Comment = DS.Model.extend(HasManyQuery.ModelMixin, {
   post: DS.belongsTo('post', {async: true})
 });
+
+function queryParams(source) {
+  var array = [];
+
+  for(var key in source) {
+    array.push(encodeURIComponent(key) + "=" + encodeURIComponent(source[key]));
+  }
+
+  return array.join("&");
+}
 
 function initializeStore(adapter) {
   env = setupStore({
@@ -27,7 +36,7 @@ function initializeStore(adapter) {
 
 module("integration/query-has-many", function(hooks) {
   hooks.beforeEach(function() {
-    var adapter = DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {});
+    let adapter = DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {});
     initializeStore(adapter);
   });
 
@@ -36,21 +45,21 @@ module("integration/query-has-many", function(hooks) {
   });
 
   test('Querying has-many relationship generates correct URL parameters', function (assert) {
-    var ajaxCalledCount = 0;
-    var requiredUrl = '';
+    let ajaxCalledCount = 0;
+    let requiredUrl = '';
 
     env.adapter.findRecord = function () {
       return resolve({post: {id: 5, links: {comments: "/posts/5/comments"}}});
     };
 
     env.adapter.ajax = function (url, method, options) {
-      var queryString = $.param(options.data);
+      let queryString = queryParams(options.data);
       assert.equal(url + '?' + queryString, requiredUrl, 'URL used to query has-many relationship is correct');
       ajaxCalledCount++;
       return resolve({comments: [{id: 1}]});
     };
 
-    var done = assert.async();
+    let done = assert.async();
     run(function () {
       env.store.findRecord('post', 5).then(function (post) {
         requiredUrl = '/posts/5/comments?page=1';
@@ -75,16 +84,16 @@ module("integration/query-has-many", function(hooks) {
     };
 
     env.adapter.ajax = function (url, method, options) {
-      var queryString = $.param(options.data);
-      var page = queryString.match(/^.*(\d+)$/)[1];
+      let queryString = queryParams(options.data);
+      let page = queryString.match(/^.*(\d+)$/)[1];
       return resolve({comments: [{id: page * 2}, {id: page * 2 + 1}]});
     };
 
-    var done = assert.async();
+    let done = assert.async();
     run(function () {
       env.store.findRecord('post', 5).then(function (post) {
         return post.query('comments', {page: 1}).then(function (comments1) {
-          var comments1Copy = comments1.slice(0);
+          let comments1Copy = comments1.slice(0);
           return post.query('comments', {page: 2}).then(function (comments2) {
             comments1Copy.forEach(function (comment) {
               assert.equal(comment.get('post.id'), 5, 'belongs-to association sticky after multiple has-many queries');
