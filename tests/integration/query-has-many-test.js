@@ -52,13 +52,13 @@ module("integration/query-has-many", function(hooks) {
 
     var done = assert.async();
     run(function () {
-      env.store.findRecord('post', 5).then(assert.wait(function (post) {
+      env.store.findRecord('post', 5).then(function (post) {
         requiredUrl = '/posts/5/comments?page=1';
-        return post.query('comments', {page: 1}).then(assert.wait(function () {
+        return post.query('comments', {page: 1}).then(function () {
           requiredUrl = '/posts/5/comments?page=2';
           return post.query('comments', {page: 2});
-        }));
-      })).then(function () {
+        });
+      }).then(function () {
         assert.equal(ajaxCalledCount, 2, 'Adapter ajax function was called to query has-many relationship');
         done();
       });
@@ -80,20 +80,22 @@ module("integration/query-has-many", function(hooks) {
       return resolve({comments: [{id: page * 2}, {id: page * 2 + 1}]});
     };
 
+    var done = assert.async();
     run(function () {
-      env.store.findRecord('post', 5).then(assert.wait(function (post) {
-        return post.query('comments', {page: 1}).then(assert.wait(function (comments1) {
+      env.store.findRecord('post', 5).then(function (post) {
+        return post.query('comments', {page: 1}).then(function (comments1) {
           var comments1Copy = comments1.slice(0);
-          return post.query('comments', {page: 2}).then(assert.wait(function (comments2) {
+          return post.query('comments', {page: 2}).then(function (comments2) {
             comments1Copy.forEach(function (comment) {
               assert.equal(comment.get('post.id'), 5, 'belongs-to association sticky after multiple has-many queries');
             });
             comments2.forEach(function (comment) {
               assert.equal(comment.get('post.id'), 5, 'belongs-to association correct');
             });
-          }));
-        }));
-      }));
+            done();
+          });
+        });
+      });
     });
   });
 });
