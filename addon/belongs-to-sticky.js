@@ -1,7 +1,7 @@
 import DS from 'ember-data';
 import { stickyPropertyName } from './property-names';
 
-var recordHasId = function (record) {
+const recordHasId = function (record) {
   return record && record.get('id');
 };
 
@@ -16,13 +16,13 @@ var recordHasId = function (record) {
  *
  * @returns {Ember.computed} relationship
  */
-var belongsToSticky = function () {
-  var computed = DS.belongsTo(...arguments);
-  var meta = computed.meta();
+const belongsToSticky = function () {
+  let computed = DS.belongsTo(...arguments);
+  let meta = computed.meta();
   meta.sticky = true;
   return computed({
     get: function (key) {
-      var value = computed._getter.call(this, ...arguments);
+      let value = computed._getter.call(this, ...arguments);
       if (recordHasId(value)) {
         return value;
       }

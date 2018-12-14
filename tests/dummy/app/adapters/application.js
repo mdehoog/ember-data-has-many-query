@@ -13,21 +13,21 @@ export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
 
   //mock ajax calls for testing
   ajax: function(url, method, options) {
-    var self = this;
-    var i;
+    const self = this;
+    let i;
     // console.log('AJAX request to: ' + url + ' with options ' + JSON.stringify(options));
     return new Promise(function(resolve) {
-      var response = {};
+      const response = {};
       if (url.match(/^\/api\/posts$/)) {
         response.posts = [];
         for (i = 0; i < 5; i++) {
           response.posts.push(self.generatePost(i));
         }
       } else if (url.match(/^\/api\/posts\/(\d+)$/)) {
-        var id = url.match(/^\/api\/posts\/(\d+)$/)[1];
+        const id = url.match(/^\/api\/posts\/(\d+)$/)[1];
         response.post = self.generatePost(id);
       } else if (url.match(/^\/api\/posts\/(\d+)\/comments$/)) {
-        var commentsPage = options.data.page;
+        const commentsPage = options.data.page;
         response.comments = [];
         for (i = 0; i < 5; i++) {
           response.comments.push(self.generateComment(i + (commentsPage - 1) * 5));

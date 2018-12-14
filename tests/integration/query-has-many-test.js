@@ -16,9 +16,9 @@ let Comment = DS.Model.extend(HasManyQuery.ModelMixin, {
 });
 
 function queryParams(source) {
-  var array = [];
+  const array = [];
 
-  for(var key in source) {
+  for(const key in source) {
     array.push(encodeURIComponent(key) + "=" + encodeURIComponent(source[key]));
   }
 

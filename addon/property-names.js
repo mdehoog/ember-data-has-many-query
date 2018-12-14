@@ -1,20 +1,20 @@
-var queryParamPropertyName = function (key) {
+const queryParamPropertyName = function (key) {
   return '__' + key + 'QueryParams';
 };
 
-var queryIdPropertyName = function (key) {
+const queryIdPropertyName = function (key) {
   return '__' + key + 'QueryId';
 };
 
-var lastWasErrorPropertyName = function (key) {
+const lastWasErrorPropertyName = function (key) {
   return '__' + key + 'LastWasError';
 };
 
-var ajaxOptionsPropertyName = function (key) {
+const ajaxOptionsPropertyName = function (key) {
   return '__' + key + 'AjaxOptions';
 };
 
-var stickyPropertyName = function (key) {
+const stickyPropertyName = function (key) {
   return '__' + key + 'BelongsToSticky';
 };
 
