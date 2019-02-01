@@ -11,6 +11,12 @@ supported with has-many/belongs-to relationships.
 This addon provides a way to query has-many and belongs-to relationships. Currently the `DS.RESTAdapter` and the
 `DS.JSONAPIAdapter` are supported.
 
+## Compatibility
+
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+
+
 ## Installation
 
 `ember install ember-data-has-many-query`
