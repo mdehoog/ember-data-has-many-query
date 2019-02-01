@@ -1,5 +1,5 @@
 import { assign } from '@ember/polyfills';
-import { copy } from '@ember/object/internals';
+import { copy } from 'ember-copy';
 import Mixin from '@ember/object/mixin';
 import { isNone, isEmpty } from '@ember/utils';
 import { isArray } from '@ember/array';
