@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { next } from '@ember/runloop';
+import { Promise } from 'rsvp';
+import Mixin from '@ember/object/mixin';
 import DS from 'ember-data';
 import {
   queryParamPropertyName,
@@ -7,14 +9,14 @@ import {
   ajaxOptionsPropertyName,
   stickyPropertyName
 } from '../property-names';
-import {recordHasId} from '../belongs-to-sticky';
+import { recordHasId } from '../belongs-to-sticky';
 
-var queryId = 0;
+let queryId = 0;
 
 /**
  * Mixin for DS.Model extensions.
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
   init() {
     this._super(...arguments);
 
@@ -42,19 +44,19 @@ export default Ember.Mixin.create({
    * @returns {Ember.RSVP.Promise}
    */
   query: function (propertyName, params) {
-    var self = this;
+    const self = this;
 
     //abort the last query request for this property
-    var _ajaxOptionsPropertyName = ajaxOptionsPropertyName(propertyName);
-    var lastAjaxOptions = this.get(_ajaxOptionsPropertyName);
+    const _ajaxOptionsPropertyName = ajaxOptionsPropertyName(propertyName);
+    const lastAjaxOptions = this.get(_ajaxOptionsPropertyName);
     if (lastAjaxOptions && lastAjaxOptions.jqXHR) {
       lastAjaxOptions.jqXHR.abort();
     }
 
     //set the query params as a property on this record
-    var _queryParamPropertyName = queryParamPropertyName(propertyName);
-    var _queryIdPropertyName = queryIdPropertyName(propertyName);
-    var currentQueryId = queryId++;
+    const _queryParamPropertyName = queryParamPropertyName(propertyName);
+    const _queryIdPropertyName = queryIdPropertyName(propertyName);
+    const currentQueryId = queryId++;
 
     const oldParams = this.get(_queryParamPropertyName, params)
 
@@ -62,7 +64,7 @@ export default Ember.Mixin.create({
     this.set(_queryIdPropertyName, currentQueryId);
 
     //get the relationship value, reloading if necessary
-    var value = this.reloadRelationship(propertyName, JSON.stringify(params) !== JSON.stringify(oldParams));
+    const value = this.reloadRelationship(propertyName, JSON.stringify(params) !== JSON.stringify(oldParams));
 
     //return the promise, clearing the ajax options property
     return value.catch(function (error) {
@@ -86,24 +88,24 @@ export default Ember.Mixin.create({
    * @param propertyName Relationship property name
    * @returns {Ember.RSVP.Promise}
    */
-  reloadRelationship: function (propertyName, forceReload) {
+  reloadRelationship: function (propertyName) {
     //find out what kind of relationship this is
-    var relationship = this.relationshipFor(propertyName);
-    var isHasMany = relationship && relationship.kind === 'hasMany';
+    const relationship = this.relationshipFor(propertyName);
+    const isHasMany = relationship && relationship.kind === 'hasMany';
 
-    var self = this;
-    var reference = isHasMany ? this.hasMany(propertyName) : this.belongsTo(propertyName);
-    return new Ember.RSVP.Promise(function (resolve) {
+    const self = this;
+    const reference = isHasMany ? this.hasMany(propertyName) : this.belongsTo(propertyName);
+    return new Promise(function (resolve) {
       //run.next, so that aborted promise gets rejected before starting another
-      Ember.run.next(this, function () {
-        var isLoaded = reference.value() !== null;
-        if (isLoaded || forceReload) {
+      next(this, function () {
+        const isLoaded = reference.value() !== null;
+        if (isLoaded) {
           resolve(reference.reload());
         } else {
           //isLoaded is false when the last query resulted in an error, so if this load
           //results in an error again, reload the reference to query the server again
-          var promise = reference.load().catch(function (error) {
-            var _lastWasErrorPropertyName = lastWasErrorPropertyName(propertyName);
+          const promise = reference.load().catch(function (error) {
+            const _lastWasErrorPropertyName = lastWasErrorPropertyName(propertyName);
             if (self.get(_lastWasErrorPropertyName)) {
               //last access to this property resulted in an error, so reload
               return reference.reload();
@@ -126,14 +128,14 @@ export default Ember.Mixin.create({
 
   _setStickyPropertyForKey(key) {
     //check if the belongsTo relationship has been marked as sticky
-    var meta = this.constructor.metaForProperty(key);
+    const meta = this.constructor.metaForProperty(key);
     if (!meta.sticky) {
       return;
     }
 
     //check if the value is loaded
-    var reference = this.belongsTo(key);
-    var value = reference && reference.value();
+    const reference = this.belongsTo(key);
+    const value = reference && reference.value();
     if (!recordHasId(value) || value.get('isEmpty')) {
       return;
     }
