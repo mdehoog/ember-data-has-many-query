@@ -11,9 +11,32 @@ supported with has-many/belongs-to relationships.
 This addon provides a way to query has-many and belongs-to relationships. Currently the `DS.RESTAdapter` and the
 `DS.JSONAPIAdapter` are supported.
 
+## Compatibility
+
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
+
+
 ## Installation
 
 `ember install ember-data-has-many-query`
+
+### Linting
+
+* `npm run lint:hbs`
+* `npm run lint:js`
+* `npm run lint:js -- --fix`
+
+### Running tests
+
+* `ember test` – Runs the test suite on the current Ember version
+* `ember test --server` – Runs the test suite in "watch mode"
+* `ember try:each` – Runs the test suite against multiple Ember versions
+
+### Running the dummy application
+
+* `ember serve`
+* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
 
 ## Usage
 
@@ -62,3 +85,6 @@ export default DS.Model.extend(HasManyQuery.ModelMixin, {
 This is a (pretty terrible) hack that caches the belongs-to record in a separate property, and when the
 record is cleared by another query call, any property `get`s will return the cached version instead. If
 anyone has ideas for better implementations, please let me know!
+
+## License
+This project is licensed under the [MIT License](LICENSE.md).
