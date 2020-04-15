@@ -58,7 +58,12 @@
     "eslint-plugin-ember": "^5.2.0",
     "eslint-plugin-node": "^7.0.1",
     "loader.js": "^4.7.0",
-    "qunit-dom": "^0.8.0"
+    "qunit-dom": "^0.8.0",
+    "lodash.template": ">=4.5.0",
+    "acorn": ">=5.7.4",
+    "minimist": ">=0.2.1",
+    "kind-of": ">=6.0.3",
+    "clean-css": ">=4.1.11"
   },
   "engines": {
     "node": "6.* || 8.* || >= 10.*"
