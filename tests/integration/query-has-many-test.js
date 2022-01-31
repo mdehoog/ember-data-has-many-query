@@ -1,6 +1,7 @@
 import { run } from '@ember/runloop';
 import { resolve } from 'rsvp';
-import DS from 'ember-data';
+import Model, { belongsTo, hasMany } from '@ember-data/model';
+import RESTAdapter from '@ember-data/adapter/rest';
 import { module, test } from 'qunit';
 import { setupStore } from '../helpers/store';
 import QueryableAdapterMixin from 'ember-data-has-many-query/mixins/queryable-adapter';
@@ -9,13 +10,13 @@ import belongsToSticky from 'ember-data-has-many-query/belongs-to-sticky';
 
 let env;
 
-let Post = DS.Model.extend(QueryableModelMixin, {
-  comments: DS.hasMany('comment', {async: true})
-});
+let Post = class extends Model.extend(QueryableModelMixin) {
+  @hasMany('comment', { async: true }) comments;
+}
 
-let Comment = DS.Model.extend(QueryableModelMixin, {
-  post: DS.belongsTo('post', {async: true})
-});
+let Comment = class extends Model.extend(QueryableModelMixin) {
+  @belongsTo('post', { async: true }) post;
+}
 
 function queryParams(source) {
   const array = [];
@@ -38,8 +39,10 @@ function initializeStore(adapter) {
 
 module("integration/query-has-many", function(hooks) {
   hooks.beforeEach(function() {
-    let adapter = DS.RESTAdapter.extend(QueryableAdapterMixin, {});
-    initializeStore(adapter);
+    let Adapter = class extends RESTAdapter.extend(QueryableAdapterMixin) {
+      
+    };
+    initializeStore(Adapter);
   });
 
   hooks.afterEach(function() {
