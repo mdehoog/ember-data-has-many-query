@@ -13,8 +13,9 @@ This addon provides a way to query has-many and belongs-to relationships. Curren
 
 ## Compatibility
 
-* Ember.js v2.18 or above
-* Ember CLI v2.13 or above
+* Ember.js v3.24 or above
+* Ember CLI v3.24 or above
+* Node.js v12 or above
 
 
 ## Installation
@@ -87,5 +88,14 @@ This is a (pretty terrible) hack that caches the belongs-to record in a separate
 record is cleared by another query call, any property `get`s will return the cached version instead. If
 anyone has ideas for better implementations, please let me know!
 
-## License
+
+Contributing
+------------------------------------------------------------------------------
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
+
+
+License
+------------------------------------------------------------------------------
+
 This project is licensed under the [MIT License](LICENSE.md).

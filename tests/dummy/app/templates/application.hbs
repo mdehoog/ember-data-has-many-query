@@ -1,17 +1,19 @@
-<h2 id="title">Welcome to Ember.js</h2>
+{{page-title "Dummy"}}
+
+<h2 id="title">Welcome to Ember</h2>
 
 <ul>
-  <li>{{link-to "Posts" "posts"}}</li>
+  <li><LinkTo @route="posts">Posts</LinkTo></li>
   <ul>
-    <li>{{link-to "Post 1" "post" 1}}</li>
+    <li><LinkTo @route="post" @model={{1}}>Post 1</LinkTo></li>
     <ul>
-      <li>{{link-to "Post 1 comments page 1" "comments" 1 1}}</li>
-      <li>{{link-to "Post 1 comments page 1" "comments" 1 2}}</li>
+      <li><LinkTo @route="comments" @model={{array 1 1}}>Post 1 comments page 1</LinkTo></li>
+      <li><LinkTo @route="comments" @model={{array 1 2}}>Post 1 comments page 2</LinkTo></li>
     </ul>
-    <li>{{link-to "Post 2" "post" 2}}</li>
+    <li><LinkTo @route="post" @model={{2}}>Post 2</LinkTo></li>
     <ul>
-      <li>{{link-to "Post 2 comments page 1" "comments" 2 1}}</li>
-      <li>{{link-to "Post 2 comments page 2" "comments" 2 2}}</li>
+      <li><LinkTo @route="comments" @model={{array 2 1}}>Post 2 comments page 1</LinkTo></li>
+      <li><LinkTo @route="comments" @model={{array 2 2}}>Post 2 comments page 2</LinkTo></li>
     </ul>
   </ul>
 </ul>
