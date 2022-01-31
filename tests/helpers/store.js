@@ -1,6 +1,14 @@
+/* eslint ember/no-classic-classes: 'off' */
+
 import { dasherize } from '@ember/string';
 import Ember from 'ember';
-import DS from 'ember-data';
+import Adapter from '@ember-data/adapter';
+import JSONSerializer from '@ember-data/serializer/json';
+import RESTSerializer from '@ember-data/serializer/rest';
+import RESTAdapter from '@ember-data/adapter/rest';
+import JSONAPIAdapter from '@ember-data/adapter/json-api';
+import JSONAPISerializer from '@ember-data/serializer/json-api';
+import Store from '@ember-data/store';
 import Owner from './owner';
 
 export default function setupStore(options) {
@@ -42,21 +50,21 @@ export default function setupStore(options) {
     registry.register('model:' + dasherize(prop), options[prop]);
   }
 
-  registry.register('service:store', DS.Store.extend({
+  registry.register('service:store', class extends Store.extend({
     adapter: adapter
-  }));
+  }) {});
 
   registry.optionsForType('serializer', { singleton: false });
   registry.optionsForType('adapter', { singleton: false });
-  registry.register('adapter:-default', DS.Adapter);
+  registry.register('adapter:-default', Adapter);
 
-  registry.register('serializer:-default', DS.JSONSerializer);
-  registry.register('serializer:-rest', DS.RESTSerializer);
+  registry.register('serializer:-default', JSONSerializer);
+  registry.register('serializer:-rest', RESTSerializer);
 
-  registry.register('adapter:-rest', DS.RESTAdapter);
+  registry.register('adapter:-rest', RESTAdapter);
 
-  registry.register('adapter:-json-api', DS.JSONAPIAdapter);
-  registry.register('serializer:-json-api', DS.JSONAPISerializer);
+  registry.register('adapter:-json-api', JSONAPIAdapter);
+  registry.register('serializer:-json-api', JSONAPISerializer);
 
   env.restSerializer = container.lookup('serializer:-rest');
   env.store = container.lookup('service:store');

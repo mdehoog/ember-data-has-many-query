@@ -1,18 +1,18 @@
-import { Promise } from 'rsvp';
-import DS from 'ember-data';
+import RESTAdapter from '@ember-data/adapter/rest';
 import QueryableAdapterMixin from 'ember-data-has-many-query/mixins/queryable-adapter';
+import { Promise } from 'rsvp';
 
-export default DS.RESTAdapter.extend(QueryableAdapterMixin, {
-  namespace: 'api',
-  shouldReloadAll: function() {
+export default class ApplicationAdapter extends RESTAdapter.extend(QueryableAdapterMixin) {
+  namespace = 'api';
+  shouldReloadAll() {
     return false;
-  },
-  shouldBackgroundReloadRecord: function() {
+  }
+  shouldBackgroundReloadRecord() {
     return true;
-  },
+  }
 
   //mock ajax calls for testing
-  ajax: function(url, method, options) {
+  ajax(url, method, options) {
     const self = this;
     let i;
     // console.log('AJAX request to: ' + url + ' with options ' + JSON.stringify(options));
@@ -35,8 +35,8 @@ export default DS.RESTAdapter.extend(QueryableAdapterMixin, {
       }
       resolve(response);
     });
-  },
-  generatePost: function(id) {
+  }
+  generatePost(id) {
     return {
       id: id,
       text: 'Post ' + id,
@@ -44,11 +44,11 @@ export default DS.RESTAdapter.extend(QueryableAdapterMixin, {
         comments: '/api/posts/' + id + '/comments'
       }
     };
-  },
-  generateComment: function(id) {
+  }
+  generateComment(id) {
     return {
       id: id,
       text: 'Comment ' + id
     };
   }
-});
+}

@@ -50,6 +50,8 @@ module("integration/query-has-many", function(hooks) {
   });
 
   test('Querying has-many relationship generates correct URL parameters', function (assert) {
+    assert.expect(3);
+
     let ajaxCalledCount = 0;
     let requiredUrl = '';
 
@@ -80,6 +82,8 @@ module("integration/query-has-many", function(hooks) {
   });
 
   test('Querying has-many relationship multiple times doesn\'t clear belongs-to-sticky association', function (assert) {
+    assert.expect(4);
+
     Comment.reopen({
       post: belongsToSticky('post', {async: true})
     });
@@ -101,10 +105,10 @@ module("integration/query-has-many", function(hooks) {
           let comments1Copy = comments1.slice(0);
           return post.query('comments', {page: 2}).then(function (comments2) {
             comments1Copy.forEach(function (comment) {
-              assert.strictEqual(comment.get('post.id'), 5, 'belongs-to association sticky after multiple has-many queries');
+              assert.strictEqual(comment.get('post.id'), '5', 'belongs-to association sticky after multiple has-many queries');
             });
             comments2.forEach(function (comment) {
-              assert.strictEqual(comment.get('post.id'), 5, 'belongs-to association correct');
+              assert.strictEqual(comment.get('post.id'), '5', 'belongs-to association correct');
             });
             done();
           });

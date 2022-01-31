@@ -1,7 +1,7 @@
 import { next } from '@ember/runloop';
 import { Promise } from 'rsvp';
 import Mixin from '@ember/object/mixin';
-import DS from 'ember-data';
+import { AbortError } from '@ember-data/adapter/error';
 import {
   queryParamPropertyName,
   queryIdPropertyName,
@@ -68,7 +68,7 @@ export default Mixin.create({
 
     //return the promise, clearing the ajax options property
     return value.catch(function (error) {
-      if (error instanceof DS.AbortError) {
+      if (error instanceof AbortError) {
         //ignore aborted requests
         return;
       }

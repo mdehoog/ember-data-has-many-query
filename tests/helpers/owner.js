@@ -1,3 +1,5 @@
+/* eslint ember/no-classic-classes: 'off' */
+
 import EmberObject from '@ember/object';
 import Ember from 'ember';
 

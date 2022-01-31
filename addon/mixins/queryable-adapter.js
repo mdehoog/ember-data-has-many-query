@@ -17,7 +17,7 @@ const evaluateFunctions = function (object, record) {
     });
   } else if (!isNone(object)) {
     Object.keys(object).forEach(function (key) {
-      if (!object.hasOwnProperty(key)) {
+      if (!Object.prototype.hasOwnProperty.call(object, key)) {
         return;
       }
       const value = object[key];
