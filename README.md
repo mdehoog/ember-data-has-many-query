@@ -41,22 +41,22 @@ This addon provides a way to query has-many and belongs-to relationships. Curren
 
 ## Usage
 
-Add the `RESTAdapterMixin` to your `DS.RESTAdapter` (or `DS.JSONAPIAdapter`) extension:
+Mix `QueryableAdapterMixin` into your `RESTAdapter` (or `JSONAPIAdapter`) subclass:
 
 ```javascript
+import RESTAdapter from '@ember-data/adapter/rest';
 import QueryableAdapterMixin from 'ember-data-has-many-query/mixins/queryable-adapter';
 
-export default DS.RESTAdapter.extend(QueryableAdapterMixin, {
-});
+export default class ApplicationAdapter extends RESTAdapter.extend(QueryableAdapterMixin) {}
 ```
 
-Add the `ModelMixin` to any `DS.Model` extensions:
+Mix `QueryableModelMixin` into any `Model` subclass:
 
 ```javascript
+import Model from '@ember-data/model';
 import QueryableModelMixin from 'ember-data-has-many-query/mixins/queryable-model';
 
-export default DS.Model.extend(QueryableModelMixin, {
-});
+export default class PostModel extends Model.extend(QueryableModelMixin) {}
 ```
 
 Models with the mixin now support has-many/belongs-to queries:
