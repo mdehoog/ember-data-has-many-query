@@ -59,7 +59,7 @@ module("integration/query-has-many", function(hooks) {
 
     env.adapter.ajax = function (url, method, options) {
       let queryString = queryParams(options.data);
-      assert.equal(url + '?' + queryString, requiredUrl, 'URL used to query has-many relationship is correct');
+      assert.strictEqual(url + '?' + queryString, requiredUrl, 'URL used to query has-many relationship is correct');
       ajaxCalledCount++;
       return resolve({comments: [{id: 1}]});
     };
@@ -73,7 +73,7 @@ module("integration/query-has-many", function(hooks) {
           return post.query('comments', {page: 2});
         });
       }).then(function () {
-        assert.equal(ajaxCalledCount, 2, 'Adapter ajax function was called to query has-many relationship');
+        assert.strictEqual(ajaxCalledCount, 2, 'Adapter ajax function was called to query has-many relationship');
         done();
       });
     });
@@ -101,10 +101,10 @@ module("integration/query-has-many", function(hooks) {
           let comments1Copy = comments1.slice(0);
           return post.query('comments', {page: 2}).then(function (comments2) {
             comments1Copy.forEach(function (comment) {
-              assert.equal(comment.get('post.id'), 5, 'belongs-to association sticky after multiple has-many queries');
+              assert.strictEqual(comment.get('post.id'), 5, 'belongs-to association sticky after multiple has-many queries');
             });
             comments2.forEach(function (comment) {
-              assert.equal(comment.get('post.id'), 5, 'belongs-to association correct');
+              assert.strictEqual(comment.get('post.id'), 5, 'belongs-to association correct');
             });
             done();
           });
