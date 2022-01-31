@@ -2,7 +2,9 @@ import RESTAdapter from '@ember-data/adapter/rest';
 import QueryableAdapterMixin from 'ember-data-has-many-query/mixins/queryable-adapter';
 import { Promise } from 'rsvp';
 
-export default class ApplicationAdapter extends RESTAdapter.extend(QueryableAdapterMixin) {
+export default class ApplicationAdapter extends RESTAdapter.extend(
+  QueryableAdapterMixin
+) {
   namespace = 'api';
   shouldReloadAll() {
     return false;
@@ -16,7 +18,7 @@ export default class ApplicationAdapter extends RESTAdapter.extend(QueryableAdap
     const self = this;
     let i;
     // console.log('AJAX request to: ' + url + ' with options ' + JSON.stringify(options));
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       const response = {};
       if (url.match(/^\/api\/posts$/)) {
         response.posts = [];
@@ -30,7 +32,9 @@ export default class ApplicationAdapter extends RESTAdapter.extend(QueryableAdap
         const commentsPage = options.data.page;
         response.comments = [];
         for (i = 0; i < 5; i++) {
-          response.comments.push(self.generateComment(i + (commentsPage - 1) * 5));
+          response.comments.push(
+            self.generateComment(i + (commentsPage - 1) * 5)
+          );
         }
       }
       resolve(response);
@@ -41,14 +45,14 @@ export default class ApplicationAdapter extends RESTAdapter.extend(QueryableAdap
       id: id,
       text: 'Post ' + id,
       links: {
-        comments: '/api/posts/' + id + '/comments'
-      }
+        comments: '/api/posts/' + id + '/comments',
+      },
     };
   }
   generateComment(id) {
     return {
       id: id,
-      text: 'Comment ' + id
+      text: 'Comment ' + id,
     };
   }
 }

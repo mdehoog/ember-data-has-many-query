@@ -18,4 +18,10 @@ const stickyPropertyName = function (key) {
   return '__' + key + 'BelongsToSticky';
 };
 
-export {queryParamPropertyName, queryIdPropertyName, lastWasErrorPropertyName, ajaxOptionsPropertyName, stickyPropertyName};
+export {
+  queryParamPropertyName,
+  queryIdPropertyName,
+  lastWasErrorPropertyName,
+  ajaxOptionsPropertyName,
+  stickyPropertyName,
+};

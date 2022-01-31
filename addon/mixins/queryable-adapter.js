@@ -5,7 +5,7 @@ import { isNone, isEmpty } from '@ember/utils';
 import { isArray } from '@ember/array';
 import {
   queryParamPropertyName,
-  ajaxOptionsPropertyName
+  ajaxOptionsPropertyName,
 } from '../property-names';
 
 const evaluateFunctions = function (object, record) {
@@ -41,7 +41,7 @@ export default Mixin.create({
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findHasMany'));
     const query = this.buildRelationshipQuery(snapshot, relationship);
 
-    const options = {data: query};
+    const options = { data: query };
     snapshot.record.set(ajaxOptionsPropertyName(relationship.key), options);
     return this.ajax(url, 'GET', options);
   },
@@ -52,7 +52,7 @@ export default Mixin.create({
     url = this.urlPrefix(url, this.buildURL(type, id, null, 'findBelongsTo'));
     const query = this.buildRelationshipQuery(snapshot, relationship);
 
-    const options = {data: query};
+    const options = { data: query };
     snapshot.record.set(ajaxOptionsPropertyName(relationship.key), options);
     return this.ajax(url, 'GET', options);
   },
@@ -60,7 +60,9 @@ export default Mixin.create({
     let data = {};
 
     //add query parameters from the model mixin's query function
-    const queryParams = snapshot.record.get(queryParamPropertyName(relationship.key));
+    const queryParams = snapshot.record.get(
+      queryParamPropertyName(relationship.key)
+    );
     if (!isEmpty(queryParams)) {
       data = copy(queryParams, true);
     }
@@ -77,13 +79,12 @@ export default Mixin.create({
   },
   ajaxOptions: function () {
     const ajaxOptions = this._super(...arguments);
-    const defaultBeforeSend = ajaxOptions.beforeSend || function () {
-    };
+    const defaultBeforeSend = ajaxOptions.beforeSend || function () {};
     ajaxOptions.beforeSend = function (jqXHR) {
       defaultBeforeSend(...arguments);
       //store the jqXHR in the options object, which in turn is stored in the model itself, so the model mixin can abort it
       ajaxOptions.jqXHR = jqXHR;
     };
     return ajaxOptions;
-  }
+  },
 });
