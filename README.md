@@ -43,18 +43,18 @@ This addon provides a way to query has-many and belongs-to relationships. Curren
 Add the `RESTAdapterMixin` to your `DS.RESTAdapter` (or `DS.JSONAPIAdapter`) extension:
 
 ```javascript
-import HasManyQuery from 'ember-data-has-many-query';
+import QueryableAdapterMixin from 'ember-data-has-many-query/mixins/queryable-adapter';
 
-export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
+export default DS.RESTAdapter.extend(QueryableAdapterMixin, {
 });
 ```
 
 Add the `ModelMixin` to any `DS.Model` extensions:
 
 ```javascript
-import HasManyQuery from 'ember-data-has-many-query';
+import QueryableModelMixin from 'ember-data-has-many-query/mixins/queryable-model';
 
-export default DS.Model.extend(HasManyQuery.ModelMixin, {
+export default DS.Model.extend(QueryableModelMixin, {
 });
 ```
 
@@ -75,10 +75,11 @@ If you want to keep the associated belongs-to record after a new query, you can 
 attribute using `belongsToSticky`:
 
 ```javascript
-import HasManyQuery from 'ember-data-has-many-query';
+import QueryableModelMixin from 'ember-data-has-many-query/mixins/queryable-model';
+import belongsToSticky from 'ember-data-has-many-query/belongs-to-sticky';
 
-export default DS.Model.extend(HasManyQuery.ModelMixin, {
-  post: HasManyQuery.belongsToSticky('post'),
+export default DS.Model.extend(QueryableModelMixin, {
+  post: belongsToSticky('post'),
 });
 ```
 

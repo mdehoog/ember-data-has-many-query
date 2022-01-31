@@ -3,15 +3,17 @@ import { resolve } from 'rsvp';
 import DS from 'ember-data';
 import { module, test } from 'qunit';
 import { setupStore } from '../helpers/store';
-import HasManyQuery from 'ember-data-has-many-query';
+import QueryableAdapterMixin from 'ember-data-has-many-query/mixins/queryable-adapter';
+import QueryableModelMixin from 'ember-data-has-many-query/mixins/queryable-model';
+import belongsToSticky from 'ember-data-has-many-query/belongs-to-sticky';
 
 let env;
 
-let Post = DS.Model.extend(HasManyQuery.ModelMixin, {
+let Post = DS.Model.extend(QueryableModelMixin, {
   comments: DS.hasMany('comment', {async: true})
 });
 
-let Comment = DS.Model.extend(HasManyQuery.ModelMixin, {
+let Comment = DS.Model.extend(QueryableModelMixin, {
   post: DS.belongsTo('post', {async: true})
 });
 
@@ -36,7 +38,7 @@ function initializeStore(adapter) {
 
 module("integration/query-has-many", function(hooks) {
   hooks.beforeEach(function() {
-    let adapter = DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {});
+    let adapter = DS.RESTAdapter.extend(QueryableAdapterMixin, {});
     initializeStore(adapter);
   });
 
@@ -76,7 +78,7 @@ module("integration/query-has-many", function(hooks) {
 
   test('Querying has-many relationship multiple times doesn\'t clear belongs-to-sticky association', function (assert) {
     Comment.reopen({
-      post: HasManyQuery.belongsToSticky('post', {async: true})
+      post: belongsToSticky('post', {async: true})
     });
 
     env.adapter.findRecord = function () {

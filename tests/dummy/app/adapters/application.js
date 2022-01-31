@@ -1,8 +1,8 @@
 import { Promise } from 'rsvp';
 import DS from 'ember-data';
-import HasManyQuery from 'ember-data-has-many-query';
+import QueryableAdapterMixin from 'ember-data-has-many-query/mixins/queryable-adapter';
 
-export default DS.RESTAdapter.extend(HasManyQuery.RESTAdapterMixin, {
+export default DS.RESTAdapter.extend(QueryableAdapterMixin, {
   namespace: 'api',
   shouldReloadAll: function() {
     return false;
