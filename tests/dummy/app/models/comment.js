@@ -1,7 +1,8 @@
-import DS from 'ember-data';
-import HasManyQuery from 'ember-data-has-many-query';
+import Model, { attr } from '@ember-data/model';
+import QueryableModelMixin from 'ember-data-has-many-query/mixins/queryable-model';
+import belongsToSticky from 'ember-data-has-many-query/belongs-to-sticky';
 
-export default DS.Model.extend(HasManyQuery.ModelMixin, {
-  text: DS.attr('string'),
-  post: HasManyQuery.belongsToSticky('post', { async: true })
-});
+export default class CommentModel extends Model.extend(QueryableModelMixin) {
+  @attr('string') text;
+  @belongsToSticky('post', { async: true }) post;
+}

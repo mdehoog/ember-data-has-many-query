@@ -1,5 +1,5 @@
-import {computed} from '@ember/object';
-import DS from 'ember-data';
+import { computed } from '@ember/object';
+import { belongsTo } from '@ember-data/model';
 import { stickyPropertyName } from './property-names';
 
 const recordHasId = function (record) {
@@ -18,7 +18,7 @@ const recordHasId = function (record) {
  * @returns {Ember.computed} relationship
  */
 const belongsToSticky = function () {
-  let _computed = DS.belongsTo(...arguments);
+  let _computed = belongsTo(...arguments);
   let meta = _computed.meta();
   meta.sticky = true;
   return computed({
@@ -32,9 +32,9 @@ const belongsToSticky = function () {
     set: function (key) {
       this.set(stickyPropertyName(key), undefined);
       return _computed._setter.call(this, ...arguments);
-    }
+    },
   }).meta(meta);
 };
 
-export {recordHasId};
+export { recordHasId };
 export default belongsToSticky;

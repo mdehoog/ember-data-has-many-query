@@ -1,13 +1,13 @@
 import { next } from '@ember/runloop';
 import { Promise } from 'rsvp';
 import Mixin from '@ember/object/mixin';
-import DS from 'ember-data';
+import { AbortError } from '@ember-data/adapter/error';
 import {
   queryParamPropertyName,
   queryIdPropertyName,
   lastWasErrorPropertyName,
   ajaxOptionsPropertyName,
-  stickyPropertyName
+  stickyPropertyName,
 } from '../property-names';
 import { recordHasId } from '../belongs-to-sticky';
 
@@ -21,7 +21,7 @@ export default Mixin.create({
     this._super(...arguments);
 
     // Set sticky properties on init
-    this.eachRelationship(key => {
+    this.eachRelationship((key) => {
       this._setStickyPropertyForKey(key);
     });
   },
@@ -58,28 +58,33 @@ export default Mixin.create({
     const _queryIdPropertyName = queryIdPropertyName(propertyName);
     const currentQueryId = queryId++;
 
-    const oldParams = this.get(_queryParamPropertyName, params)
+    const oldParams = this.get(_queryParamPropertyName, params);
 
     this.set(_queryParamPropertyName, params);
     this.set(_queryIdPropertyName, currentQueryId);
 
     //get the relationship value, reloading if necessary
-    const value = this.reloadRelationship(propertyName, JSON.stringify(params) !== JSON.stringify(oldParams));
+    const value = this.reloadRelationship(
+      propertyName,
+      JSON.stringify(params) !== JSON.stringify(oldParams)
+    );
 
     //return the promise, clearing the ajax options property
-    return value.catch(function (error) {
-      if (error instanceof DS.AbortError) {
-        //ignore aborted requests
-        return;
-      }
-      throw error;
-    }).finally(function () {
-      if (self.get(_queryIdPropertyName) !== currentQueryId) {
-        //don't clear parameters if they've been set by another request
-        return;
-      }
-      self.set(_ajaxOptionsPropertyName, undefined);
-    });
+    return value
+      .catch(function (error) {
+        if (error instanceof AbortError) {
+          //ignore aborted requests
+          return;
+        }
+        throw error;
+      })
+      .finally(function () {
+        if (self.get(_queryIdPropertyName) !== currentQueryId) {
+          //don't clear parameters if they've been set by another request
+          return;
+        }
+        self.set(_ajaxOptionsPropertyName, undefined);
+      });
   },
 
   /**
@@ -94,7 +99,9 @@ export default Mixin.create({
     const isHasMany = relationship && relationship.kind === 'hasMany';
 
     const self = this;
-    const reference = isHasMany ? this.hasMany(propertyName) : this.belongsTo(propertyName);
+    const reference = isHasMany
+      ? this.hasMany(propertyName)
+      : this.belongsTo(propertyName);
     return new Promise(function (resolve) {
       //run.next, so that aborted promise gets rejected before starting another
       next(this, function () {
@@ -105,7 +112,8 @@ export default Mixin.create({
           //isLoaded is false when the last query resulted in an error, so if this load
           //results in an error again, reload the reference to query the server again
           const promise = reference.load().catch(function (error) {
-            const _lastWasErrorPropertyName = lastWasErrorPropertyName(propertyName);
+            const _lastWasErrorPropertyName =
+              lastWasErrorPropertyName(propertyName);
             if (self.get(_lastWasErrorPropertyName)) {
               //last access to this property resulted in an error, so reload
               return reference.reload();
@@ -143,5 +151,5 @@ export default Mixin.create({
     //if a belongsTo relationship attribute has changed, and the new record has an id,
     //store the record in a property so that the belongsToSticky can return if it required
     this.set(stickyPropertyName(key), value);
-  }
+  },
 });

@@ -5,11 +5,11 @@ export function wait(callback, timeout) {
   let done = this.async();
 
   let timer = setTimeout(() => {
-    this.ok(false, "Timeout was reached");
+    this.ok(false, 'Timeout was reached');
     done();
   }, timeout || 200);
 
-  return function() {
+  return function () {
     window.clearTimeout(timer);
 
     let args = arguments;
@@ -24,12 +24,11 @@ export function wait(callback, timeout) {
 }
 
 export function asyncEqual(a, b, message) {
-  return all([
-    resolve(a),
-    resolve(b)
-  ]).then(this.wait((array) => {
-    this.push(array[0] === array[1], array[0], array[1], message);
-  }));
+  return all([resolve(a), resolve(b)]).then(
+    this.wait((array) => {
+      this.push(array[0] === array[1], array[0], array[1], message);
+    })
+  );
 }
 
 export function invokeAsync(callback, timeout = 1) {
