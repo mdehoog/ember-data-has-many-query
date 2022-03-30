@@ -88,7 +88,7 @@ export default Mixin.create({
    * @param propertyName Relationship property name
    * @returns {Ember.RSVP.Promise}
    */
-  reloadRelationship: function (propertyName) {
+  reloadRelationship: function (propertyName, forceReload) {
     //find out what kind of relationship this is
     const relationship = this.relationshipFor(propertyName);
     const isHasMany = relationship && relationship.kind === 'hasMany';
@@ -99,7 +99,7 @@ export default Mixin.create({
       //run.next, so that aborted promise gets rejected before starting another
       next(this, function () {
         const isLoaded = reference.value() !== null;
-        if (isLoaded) {
+        if (isLoaded || forceReload) {
           resolve(reference.reload());
         } else {
           //isLoaded is false when the last query resulted in an error, so if this load
